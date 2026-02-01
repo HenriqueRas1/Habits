@@ -12,12 +12,17 @@ export default function HabitCard({
   onUpdateHabit,
   onDeleteHabit,
   onAddChecklistItem,
-  onRemoveChecklistItem
+  onRemoveChecklistItem,
+  onDuplicateHabit
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const totalItems = habit.checklistTemplate?.length || 0;
+  const hasChecklist = totalItems > 0;
   const { fraction, percent } = calculateProgress(completedItems, totalItems);
+  
+  // When no checklist exists, progress is based on isDone status
+  const displayPercent = hasChecklist ? percent : (isDone ? 100 : 0);
 
   const getContrastColor = (hexColor) => {
     const hex = hexColor.replace('#', '');
@@ -114,20 +119,22 @@ export default function HabitCard({
             <div
               className="h-full rounded-full transition-all duration-300"
               style={{ 
-                width: `${percent}%`,
+                width: `${displayPercent}%`,
                 backgroundColor: textColor,
                 opacity: 0.8
               }}
             />
           </div>
           
-          {/* Fraction */}
-          <span 
-            className="text-xs font-medium"
-            style={{ color: textColor, opacity: 0.9 }}
-          >
-            {fraction}
-          </span>
+          {/* Fraction - only show when there are checklist items */}
+          {hasChecklist && (
+            <span 
+              className="text-xs font-medium"
+              style={{ color: textColor, opacity: 0.9 }}
+            >
+              {fraction}
+            </span>
+          )}
         </div>
       </div>
 
@@ -143,6 +150,7 @@ export default function HabitCard({
           onDeleteHabit={onDeleteHabit}
           onAddChecklistItem={onAddChecklistItem}
           onRemoveChecklistItem={onRemoveChecklistItem}
+          onDuplicateHabit={onDuplicateHabit}
         />
       )}
     </>

@@ -13,6 +13,7 @@ export default function DayColumn({
   addChecklistItem,
   removeChecklistItem,
   reorderHabits,
+  duplicateHabit,
   onAddHabit
 }) {
   const [dragOverId, setDragOverId] = useState(null);
@@ -81,6 +82,7 @@ export default function DayColumn({
               onDeleteHabit={deleteHabit}
               onAddChecklistItem={addChecklistItem}
               onRemoveChecklistItem={removeChecklistItem}
+              onDuplicateHabit={duplicateHabit}
             />
           </div>
         ))}

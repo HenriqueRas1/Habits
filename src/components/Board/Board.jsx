@@ -10,7 +10,7 @@ export default function Board() {
   const days = getWeekDays();
   const weekKey = getWeekKey();
   const { user, logout } = useAuth();
-  const { habits, loading: habitsLoading, addHabit, updateHabit, deleteHabit, addChecklistItem, removeChecklistItem, reorderHabits } = useHabits();
+  const { habits, loading: habitsLoading, addHabit, updateHabit, deleteHabit, addChecklistItem, removeChecklistItem, reorderHabits, duplicateHabit } = useHabits();
   const { completions, loading: completionsLoading, toggleChecklistItem, getCompletedItems, toggleHabitDone, isHabitDone } = useCompletions();
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
@@ -106,6 +106,7 @@ export default function Board() {
           addChecklistItem={addChecklistItem}
           removeChecklistItem={removeChecklistItem}
           reorderHabits={reorderHabits}
+          duplicateHabit={duplicateHabit}
           onAddHabit={() => openAddForm(days[currentDayIndex].key)}
         />
       </div>
@@ -167,6 +168,7 @@ export default function Board() {
             addChecklistItem={addChecklistItem}
             removeChecklistItem={removeChecklistItem}
             reorderHabits={reorderHabits}
+            duplicateHabit={duplicateHabit}
             onAddHabit={() => openAddForm(day.key)}
           />
         ))}

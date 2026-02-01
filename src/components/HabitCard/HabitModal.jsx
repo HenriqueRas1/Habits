@@ -2,6 +2,16 @@ import { useState } from 'react';
 import { calculateProgress } from '../../lib/weekUtils';
 import ColorPicker from '../UI/ColorPicker';
 
+const DAY_OPTIONS = [
+  { key: 'monday', label: 'Mon' },
+  { key: 'tuesday', label: 'Tue' },
+  { key: 'wednesday', label: 'Wed' },
+  { key: 'thursday', label: 'Thu' },
+  { key: 'friday', label: 'Fri' },
+  { key: 'saturday', label: 'Sat' },
+  { key: 'sunday', label: 'Sun' }
+];
+
 export default function HabitModal({
   habit,
   dayKey,
@@ -11,13 +21,16 @@ export default function HabitModal({
   onUpdateHabit,
   onDeleteHabit,
   onAddChecklistItem,
-  onRemoveChecklistItem
+  onRemoveChecklistItem,
+  onDuplicateHabit
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(habit.title);
   const [newItemLabel, setNewItemLabel] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showDuplicatePanel, setShowDuplicatePanel] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([dayKey]);
 
   const totalItems = habit.checklistTemplate?.length || 0;
   const { fraction, percent } = calculateProgress(completedItems, totalItems);
@@ -55,6 +68,21 @@ export default function HabitModal({
       setEditedTitle(habit.title);
       setIsEditingTitle(false);
     }
+  };
+
+  const toggleDaySelection = (dayKey) => {
+    setSelectedDays(prev => 
+      prev.includes(dayKey)
+        ? prev.filter(d => d !== dayKey)
+        : [...prev, dayKey]
+    );
+  };
+
+  const handleDuplicate = async () => {
+    if (selectedDays.length === 0) return;
+    await onDuplicateHabit(habit.id, selectedDays);
+    setShowDuplicatePanel(false);
+    onClose();
   };
 
   return (
@@ -118,6 +146,43 @@ export default function HabitModal({
               selectedColor={habit.color} 
               onSelectColor={handleColorChange} 
             />
+          </div>
+        )}
+
+        {/* Duplicate Panel */}
+        {showDuplicatePanel && (
+          <div className="p-4 border-b border-gray-700">
+            <p className="text-sm text-gray-400 mb-3">Select days for the duplicate:</p>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {DAY_OPTIONS.map(day => (
+                <button
+                  key={day.key}
+                  onClick={() => toggleDaySelection(day.key)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    selectedDays.includes(day.key)
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  }`}
+                >
+                  {day.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleDuplicate}
+                disabled={selectedDays.length === 0}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Duplicate
+              </button>
+              <button
+                onClick={() => setShowDuplicatePanel(false)}
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-600 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
 
@@ -202,19 +267,27 @@ export default function HabitModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 border-t border-gray-700 flex justify-between">
+        <div className="p-4 border-t border-gray-700 flex justify-between items-center">
           <button
             onClick={() => setIsEditing(!isEditing)}
             className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
           >
             {isEditing ? 'Done Editing' : 'Edit Items'}
           </button>
-          <button
-            onClick={handleDeleteHabit}
-            className="px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors"
-          >
-            Delete Habit
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowDuplicatePanel(!showDuplicatePanel)}
+              className="px-4 py-2 text-sm text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Duplicate
+            </button>
+            <button
+              onClick={handleDeleteHabit}
+              className="px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors"
+            >
+              Delete Habit
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -95,6 +95,27 @@ export function useHabits() {
     await saveHabits(newHabits);
   }, [habits, saveHabits]);
 
+  const duplicateHabit = useCallback(async (habitId, targetDays) => {
+    const habitToDuplicate = habits.find(h => h.id === habitId);
+    if (!habitToDuplicate) return;
+    
+    const newHabit = {
+      ...habitToDuplicate,
+      id: uuidv4(),
+      title: `${habitToDuplicate.title}`,
+      days: targetDays,
+      order: habits.length,
+      checklistTemplate: habitToDuplicate.checklistTemplate.map(item => ({
+        id: uuidv4(),
+        label: item.label
+      })),
+      createdAt: new Date().toISOString()
+    };
+    
+    const newHabits = [...habits, newHabit];
+    await saveHabits(newHabits);
+  }, [habits, saveHabits]);
+
   return {
     habits,
     loading,
@@ -104,6 +125,7 @@ export function useHabits() {
     deleteHabit,
     addChecklistItem,
     removeChecklistItem,
-    reorderHabits
+    reorderHabits,
+    duplicateHabit
   };
 }

@@ -46,4 +46,6 @@ vite-plugin-pwa, Vitest + Testing Library. Lint com oxlint, formatação com Pre
   TS 7, por isso o lint é feito com oxlint (.oxlintrc.json) em vez de ESLint.
 
 ## Fase atual
-Fase 0 — base do projeto. (Atualize esta linha ao terminar cada fase.)
+Fase 1 — banco e login. (Atualize esta linha ao terminar cada fase.)
+Fase 0 concluída: base do projeto, AppShell e deploy na Vercel conferidos no PC e no iPhone.
+Branch padrão do repositório: master.

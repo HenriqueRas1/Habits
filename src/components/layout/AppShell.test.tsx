@@ -1,24 +1,17 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { RouterProvider, createMemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
-import { routes } from '../../routes.tsx'
-
-function renderAt(path: string) {
-  const router = createMemoryRouter(routes, { initialEntries: [path] })
-  render(<RouterProvider router={router} />)
-  return router
-}
+import { renderApp } from '../../test/renderApp.tsx'
 
 describe('AppShell', () => {
   it('abre na tela Hoje', () => {
-    renderAt('/')
+    renderApp('/')
     expect(screen.getByRole('heading', { level: 1, name: 'Hoje' })).toBeInTheDocument()
   })
 
   it('troca de página ao tocar numa aba', async () => {
     const user = userEvent.setup()
-    const router = renderAt('/')
+    const { router } = renderApp('/')
 
     const tabBar = screen.getAllByRole('navigation', { name: 'Navegação principal' })[1]
     const links = tabBar.querySelectorAll('a')
@@ -32,13 +25,13 @@ describe('AppShell', () => {
   })
 
   it('marca a aba ativa', () => {
-    renderAt('/calendar')
+    renderApp('/calendar')
     const active = screen.getAllByRole('link', { current: 'page' })
     expect(active.every((a) => a.textContent === 'Calendário')).toBe(true)
   })
 
   it('redireciona rotas desconhecidas para Hoje', () => {
-    const router = renderAt('/nao-existe')
+    const { router } = renderApp('/nao-existe')
     expect(router.state.location.pathname).toBe('/')
   })
 })

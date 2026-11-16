@@ -1,23 +1,50 @@
-import { addDays } from '../lib/dates.ts'
-import type { EntryKind } from '../types/domain.ts'
-
-type StreakEntry = { entry_date: string; kind: EntryKind }
+import { nextPeriod, periodOf, previousPeriod, type WeekStart } from './periods.ts'
+import { indexEntries, stateFromIndex, type GoalHabit, type ProgressEntry } from './progress.ts'
 
 /**
- * Streak simples da fase 2: dias seguidos com registro "done", terminando hoje ou ontem.
- * Hoje ainda sem registro não quebra o streak. A fase 3 troca por currentStreak completo
- * (períodos, pulos e dias não agendados).
+ * Streak atual, na unidade do período da meta (dias, semanas ou meses).
+ * Anda do período atual para trás: completed soma, skipped / not_scheduled / in_progress
+ * são neutros, e o primeiro missed para a contagem.
  */
-export function currentDailyStreak(entries: StreakEntry[], today: string): number {
-  const doneDays = new Set(
-    entries.filter((e) => e.kind === 'done' && e.entry_date <= today).map((e) => e.entry_date),
-  )
-
-  let day = doneDays.has(today) ? today : addDays(today, -1)
+export function currentStreak(
+  habit: GoalHabit,
+  entries: ProgressEntry[],
+  today: string,
+  weekStart: WeekStart,
+): number {
+  const index = indexEntries(entries.filter((e) => e.entry_date <= today))
   let streak = 0
-  while (doneDays.has(day)) {
-    streak += 1
-    day = addDays(day, -1)
+  for (
+    let p = periodOf(today, habit.goal_period, weekStart);
+    p.end >= habit.start_date;
+    p = previousPeriod(p, habit.goal_period, weekStart)
+  ) {
+    const state = stateFromIndex(habit, index, p, today)
+    if (state === 'missed') break
+    if (state === 'completed') streak += 1
   }
   return streak
+}
+
+/** Maior sequência da história do hábito, com as mesmas regras do streak atual. */
+export function bestStreak(
+  habit: GoalHabit,
+  entries: ProgressEntry[],
+  today: string,
+  weekStart: WeekStart,
+): number {
+  if (habit.start_date > today) return 0
+  const index = indexEntries(entries.filter((e) => e.entry_date <= today))
+  let best = 0
+  let run = 0
+  for (
+    let p = periodOf(habit.start_date, habit.goal_period, weekStart);
+    p.start <= today;
+    p = nextPeriod(p, habit.goal_period, weekStart)
+  ) {
+    const state = stateFromIndex(habit, index, p, today)
+    if (state === 'missed') run = 0
+    else if (state === 'completed') best = Math.max(best, (run += 1))
+  }
+  return best
 }

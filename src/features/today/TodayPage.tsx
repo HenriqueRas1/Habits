@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { Alert } from '../../components/ui/Alert.tsx'
 import { Button } from '../../components/ui/Button.tsx'
 import { FullScreenSpinner } from '../../components/ui/FullScreenSpinner.tsx'
-import { currentDailyStreak } from '../../domain/streaks.ts'
+import { currentStreak } from '../../domain/streaks.ts'
 import { formatDayLabel } from '../../lib/dates.ts'
 import type { Entry } from '../../types/domain.ts'
 import { useSession } from '../auth/sessionContext.ts'
@@ -81,7 +81,7 @@ export function TodayPage() {
                 key={habit.id}
                 habit={habit}
                 done={doneIds.length > 0}
-                streak={currentDailyStreak(habitEntries, today)}
+                streak={currentStreak(habit, habitEntries, today, 1)}
                 onToggle={() =>
                   toggle.mutate({
                     input: {

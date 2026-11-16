@@ -1,0 +1,43 @@
+import { TZDate } from '@date-fns/tz'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale/pt-BR'
+
+/**
+ * Único lugar do app que lida com fuso horário.
+ * Datas de calendário circulam como texto YYYY-MM-DD; horários, como ISO com fuso.
+ */
+
+export const DEFAULT_TIMEZONE = 'America/Sao_Paulo'
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
+
+/** "Hoje" no fuso informado, como YYYY-MM-DD. */
+export function todayIn(timezone: string, now: Date): string {
+  return format(new TZDate(now, timezone), 'yyyy-MM-dd')
+}
+
+/** Lê YYYY-MM-DD como meia-noite UTC, para contas de calendário sem efeito de fuso. */
+function parseUtc(date: string): Date {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d))
+}
+
+function formatUtc(date: Date): string {
+  return date.toISOString().slice(0, 10)
+}
+
+export function addDays(date: string, days: number): string {
+  const d = parseUtc(date)
+  d.setUTCDate(d.getUTCDate() + days)
+  return formatUtc(d)
+}
+
+export function isDateString(value: string): boolean {
+  return DATE_RE.test(value) && formatUtc(parseUtc(value)) === value
+}
+
+/** "segunda-feira, 16 de novembro" */
+export function formatDayLabel(date: string): string {
+  const [y, m, d] = date.split('-').map(Number)
+  return format(new Date(y, m - 1, d), "EEEE, d 'de' MMMM", { locale: ptBR })
+}

@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react'
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'link'
+  variant?: 'primary' | 'secondary' | 'link' | 'dangerLink'
   loading?: boolean
 }
 
@@ -10,6 +10,7 @@ const styles = {
   secondary:
     'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:text-slate-400',
   link: 'text-brand-600 hover:underline disabled:text-slate-400',
+  dangerLink: 'text-red-700 hover:underline disabled:text-slate-400',
 } as const
 
 export function Button({
@@ -21,7 +22,7 @@ export function Button({
   ...rest
 }: Props) {
   const base =
-    variant === 'link'
+    variant === 'link' || variant === 'dangerLink'
       ? 'min-h-11 px-1 text-sm font-medium'
       : 'min-h-11 rounded-lg px-4 text-sm font-semibold transition-colors'
   return (

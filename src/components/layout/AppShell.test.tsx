@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest'
 import { renderApp } from '../../test/renderApp.tsx'
 
 describe('AppShell', () => {
-  it('abre na tela Hoje', () => {
+  it('abre na tela Hoje', async () => {
     renderApp('/')
-    expect(screen.getByRole('heading', { level: 1, name: 'Hoje' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Hoje' })).toBeInTheDocument()
   })
 
   it('troca de página ao tocar numa aba', async () => {

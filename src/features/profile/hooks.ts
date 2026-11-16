@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { DEFAULT_TIMEZONE, todayIn } from '../../lib/dates.ts'
+import type { WeekStart } from '../../domain/periods.ts'
 import { fetchProfile } from './api.ts'
 
 export const profileKey = ['profile'] as const
@@ -30,4 +31,9 @@ export function useToday(): string {
   }, [timezone])
 
   return today
+}
+
+/** Início da semana do perfil: 1 = segunda (padrão), 0 = domingo. */
+export function useWeekStart(): WeekStart {
+  return useProfile().data?.week_start === 0 ? 0 : 1
 }

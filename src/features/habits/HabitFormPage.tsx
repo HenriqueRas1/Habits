@@ -5,7 +5,7 @@ import { FullScreenSpinner } from '../../components/ui/FullScreenSpinner.tsx'
 import { useSession } from '../auth/sessionContext.ts'
 import { useToday } from '../profile/hooks.ts'
 import { HabitForm } from './HabitForm.tsx'
-import { HABIT_COLORS, type HabitFormValues } from './habitSchema.ts'
+import { fromHabit, newHabitDefaults, toHabitFields, type HabitFormValues } from './habitSchema.ts'
 import { useArchiveHabit, useCreateHabit, useHabit, useHabits, useUpdateHabit } from './hooks.ts'
 
 /** /habits/new e /habits/:id/edit */
@@ -33,21 +33,15 @@ export function HabitFormPage() {
     )
   }
 
-  const defaults: HabitFormValues = habit
-    ? { name: habit.name, icon: habit.icon, color: habit.color, start_date: habit.start_date }
-    : {
-        name: params.get('name') ?? '',
-        icon: params.get('icon') ?? '✅',
-        color: HABIT_COLORS[0],
-        start_date: today,
-      }
+  const defaults = habit ? fromHabit(habit) : newHabitDefaults(params, today)
 
   function handleSubmit(values: HabitFormValues) {
+    const fields = toHabitFields(values)
     if (habit) {
-      update.mutate({ id: habit.id, patch: values })
+      update.mutate({ id: habit.id, patch: fields })
     } else {
       const maxOrder = Math.max(-1, ...(habits.data ?? []).map((h) => h.sort_order))
-      create.mutate({ id: crypto.randomUUID(), ...values, sort_order: maxOrder + 1 })
+      create.mutate({ id: crypto.randomUUID(), ...fields, sort_order: maxOrder + 1 })
     }
     goHome()
   }

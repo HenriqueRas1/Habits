@@ -1,11 +1,18 @@
 import { Link } from 'react-router'
 
+/** Sugestões do primeiro acesso; os parâmetros preenchem o formulário de hábito novo. */
 const suggestions = [
-  { name: 'Beber água', icon: '💧' },
-  { name: 'Ler 20 min', icon: '📚' },
-  { name: 'Meditar', icon: '🧘' },
-  { name: 'Academia', icon: '🏋️' },
+  { name: 'Beber água', icon: '💧', kind: 'count', target: 8, unit: 'copos', period: 'day' },
+  { name: 'Ler 20 min', icon: '📚', kind: 'duration', target: 20, period: 'day' },
+  { name: 'Academia 3x/semana', icon: '🏋️', kind: 'check', target: 3, period: 'week' },
+  { name: 'Meditar', icon: '🧘', kind: 'check', target: 1, period: 'day' },
 ]
+
+function suggestionUrl({ name, icon, kind, target, period, ...rest }: (typeof suggestions)[0]) {
+  const params = new URLSearchParams({ name, icon, kind, target: String(target), period })
+  if ('unit' in rest && rest.unit) params.set('unit', rest.unit)
+  return `/habits/new?${params.toString()}`
+}
 
 export function EmptyToday() {
   return (
@@ -20,7 +27,7 @@ export function EmptyToday() {
         {suggestions.map((s) => (
           <li key={s.name}>
             <Link
-              to={`/habits/new?name=${encodeURIComponent(s.name)}&icon=${encodeURIComponent(s.icon)}`}
+              to={suggestionUrl(s)}
               className="flex min-h-11 items-center gap-2 rounded-full border border-slate-200 px-4 text-sm font-medium hover:bg-slate-50"
             >
               <span aria-hidden>{s.icon}</span>

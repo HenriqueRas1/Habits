@@ -51,6 +51,11 @@ describe('HabitFormPage', () => {
       icon: '💧',
       color: '#10b981',
       start_date: '2026-03-10',
+      goal_kind: 'check',
+      goal_period: 'day',
+      goal_target: 1,
+      goal_unit: null,
+      schedule_days: null,
       sort_order: 0,
     })
   })
@@ -85,6 +90,56 @@ describe('HabitFormPage', () => {
 
     await vi.waitFor(() =>
       expect(habitsApi.archiveHabit).toHaveBeenCalledWith(habit.id, expect.any(String)),
+    )
+  })
+
+  it('cria meta semanal de 3 dias pela sugestão', async () => {
+    renderApp('/habits/new?name=Academia&kind=check&target=3&period=week')
+    const user = userEvent.setup()
+    expect(await screen.findByLabelText('Quantos dias por semana')).toHaveValue(3)
+    await user.click(screen.getByRole('button', { name: 'Criar hábito' }))
+
+    await vi.waitFor(() =>
+      expect(habitsApi.createHabit).toHaveBeenCalledWith(
+        expect.objectContaining({ goal_kind: 'check', goal_period: 'week', goal_target: 3 }),
+      ),
+    )
+  })
+
+  it('não aceita mais de 7 dias por semana', async () => {
+    renderApp('/habits/new?name=Academia')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: 'Semana' }))
+    const target = screen.getByLabelText('Quantos dias por semana')
+    await user.clear(target)
+    await user.type(target, '8')
+    await user.click(screen.getByRole('button', { name: 'Criar hábito' }))
+
+    expect(await screen.findByText('No máximo 7 dias por semana.')).toBeInTheDocument()
+    expect(habitsApi.createHabit).not.toHaveBeenCalled()
+  })
+
+  it('cria meta de quantidade com unidade e dias da semana', async () => {
+    renderApp('/habits/new?name=Copos')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: 'Quantidade' }))
+    const target = screen.getByLabelText('Quantidade por dia')
+    await user.clear(target)
+    await user.type(target, '8')
+    await user.type(screen.getByLabelText('Unidade'), 'copos')
+    await user.click(screen.getByRole('button', { name: 'Quarta' }))
+    await user.click(screen.getByRole('button', { name: 'Segunda' }))
+    await user.click(screen.getByRole('button', { name: 'Criar hábito' }))
+
+    await vi.waitFor(() =>
+      expect(habitsApi.createHabit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          goal_kind: 'count',
+          goal_target: 8,
+          goal_unit: 'copos',
+          schedule_days: [1, 3],
+        }),
+      ),
     )
   })
 })

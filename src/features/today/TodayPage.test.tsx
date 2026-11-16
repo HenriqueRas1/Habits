@@ -23,9 +23,9 @@ describe('TodayPage', () => {
   it('mostra sugestões quando não há hábitos', async () => {
     renderApp('/')
     expect(await screen.findByText('Nenhum hábito ainda')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Beber água/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Academia 3x\/semana/ })).toHaveAttribute(
       'href',
-      '/habits/new?name=Beber%20%C3%A1gua&icon=%F0%9F%92%A7',
+      expect.stringContaining('kind=check&target=3&period=week'),
     )
   })
 
@@ -66,6 +66,8 @@ describe('TodayPage', () => {
       id: expect.stringMatching(/^[0-9a-f-]{36}$/),
       habit_id: habit.id,
       entry_date: TODAY,
+      kind: 'done',
+      value: 1,
     })
   })
 
@@ -91,7 +93,7 @@ describe('TodayPage', () => {
       .setup()
       .click(await screen.findByRole('button', { name: /Ler: marcar como feito/ }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o check')
+    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar')
     await waitFor(() =>
       expect(screen.getByRole('button', { name: /Ler: marcar como feito/ })).toHaveAttribute(
         'aria-pressed',

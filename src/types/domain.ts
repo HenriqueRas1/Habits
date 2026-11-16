@@ -9,6 +9,7 @@ export type HabitUpdate = Tables['habits']['Update']
 
 export type Entry = Tables['entries']['Row']
 export type EntryInsert = Tables['entries']['Insert']
+export type EntryUpdate = Tables['entries']['Update']
 
 export type Profile = Tables['profiles']['Row']
 

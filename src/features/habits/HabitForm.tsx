@@ -3,6 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Button } from '../../components/ui/Button.tsx'
 import { TextField } from '../../components/ui/TextField.tsx'
 import { ColorPicker } from './ColorPicker.tsx'
+import { GoalFields } from './GoalFields.tsx'
 import { IconPicker } from './IconPicker.tsx'
 import { habitFormSchema, type HabitFormValues } from './habitSchema.ts'
 
@@ -49,6 +50,8 @@ export function HabitForm({ today, defaultValues, submitLabel, onSubmit, onCance
         name="color"
         render={({ field }) => <ColorPicker value={field.value} onChange={field.onChange} />}
       />
+
+      <GoalFields control={control} register={register} errors={errors} />
 
       <TextField
         label="Começa em"

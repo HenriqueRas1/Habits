@@ -1,61 +1,71 @@
 import { Link } from 'react-router'
-import type { Habit } from '../../types/domain.ts'
+import { CardControl } from './CardControl.tsx'
+import { HabitMenu } from './HabitMenu.tsx'
+import { progressLabel, streakLabel, type HabitDay } from './habitDay.ts'
+import type { DayActions } from './useDayActions.ts'
 
 type Props = {
-  habit: Habit
-  done: boolean
-  streak: number
-  onToggle: () => void
+  day: HabitDay
+  /** Ausente no modo de reordenar. */
+  actions?: DayActions
+  isToday: boolean
   reorder?: { onUp?: () => void; onDown?: () => void }
 }
 
-export function HabitCard({ habit, done, streak, onToggle, reorder }: Props) {
+export function HabitCard({ day, actions, isToday, reorder }: Props) {
+  const { habit, state } = day
+  const completed = state === 'completed'
+  const skipped = state === 'skipped'
+  const progress = progressLabel(day)
+  const ratio = Math.min(1, day.progress / habit.goal_target)
+
   return (
     <li
-      className="flex min-h-18 items-center gap-3 rounded-2xl border bg-white p-3 pl-4 transition-colors"
-      style={{ borderColor: done ? habit.color : undefined }}
+      className={`relative flex min-h-18 flex-col rounded-2xl border bg-white transition-colors ${
+        skipped || !day.scheduled ? 'opacity-60' : ''
+      }`}
+      style={{ borderColor: completed ? habit.color : undefined }}
     >
-      <span className="text-2xl" aria-hidden>
-        {habit.icon}
-      </span>
-
-      <Link to={`/habits/${habit.id}/edit`} className="min-w-0 flex-1 py-2">
-        <span className="block truncate font-semibold">{habit.name}</span>
-        <span className="block text-sm text-slate-500">
-          {streak > 0 ? `🔥 ${streak} ${streak === 1 ? 'dia' : 'dias'}` : 'Sem sequência ainda'}
+      <div className="flex items-center gap-2 p-3 pl-4">
+        <span className="text-2xl" aria-hidden>
+          {habit.icon}
         </span>
-      </Link>
 
-      {reorder ? (
-        <div className="flex gap-1">
-          <ArrowButton label={`Mover ${habit.name} para cima`} onClick={reorder.onUp} up />
-          <ArrowButton label={`Mover ${habit.name} para baixo`} onClick={reorder.onDown} />
-        </div>
-      ) : (
-        <button
-          type="button"
-          aria-pressed={done}
-          aria-label={`${habit.name}: ${done ? 'feito hoje, toque para desmarcar' : 'marcar como feito'}`}
-          onClick={onToggle}
-          className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90"
-          style={{
-            borderColor: habit.color,
-            backgroundColor: done ? habit.color : 'transparent',
-          }}
-        >
-          {done && (
-            <svg
-              viewBox="0 0 24 24"
-              className="size-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={3}
-              aria-hidden
-            >
-              <path d="m5 12 5 5 9-10" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+        <Link to={`/habits/${habit.id}/edit`} className="min-w-0 flex-1 py-1">
+          <span className="block truncate font-semibold">{habit.name}</span>
+          <span className="block text-sm text-slate-500">
+            {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]
+              .filter(Boolean)
+              .join(' · ')}
+          </span>
+          {day.noteEntry?.note && (
+            <span className="block truncate text-sm text-slate-400 italic">
+              {day.noteEntry.note}
+            </span>
           )}
-        </button>
+        </Link>
+
+        {reorder && (
+          <div className="flex gap-1">
+            <ArrowButton label={`Mover ${habit.name} para cima`} onClick={reorder.onUp} up />
+            <ArrowButton label={`Mover ${habit.name} para baixo`} onClick={reorder.onDown} />
+          </div>
+        )}
+        {actions && !reorder && (
+          <>
+            <HabitMenu day={day} actions={actions} />
+            <CardControl day={day} actions={actions} isToday={isToday} />
+          </>
+        )}
+      </div>
+
+      {progress && (
+        <div className="mx-4 mb-3 h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden>
+          <div
+            className="h-full transition-all"
+            style={{ width: `${ratio * 100}%`, backgroundColor: habit.color }}
+          />
+        </div>
       )}
     </li>
   )

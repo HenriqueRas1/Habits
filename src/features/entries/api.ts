@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase.ts'
-import type { Entry, EntryInsert } from '../../types/domain.ts'
+import type { Entry, EntryInsert, EntryUpdate } from '../../types/domain.ts'
 
 export type NewEntry = EntryInsert & { id: string }
 
@@ -36,5 +36,10 @@ export async function createEntry(entry: NewEntry): Promise<void> {
 
 export async function deleteEntries(ids: string[]): Promise<void> {
   const { error } = await supabase.from('entries').delete().in('id', ids)
+  if (error) throw error
+}
+
+export async function updateEntry(id: string, patch: EntryUpdate): Promise<void> {
+  const { error } = await supabase.from('entries').update(patch).eq('id', id)
   if (error) throw error
 }

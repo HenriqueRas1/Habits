@@ -22,13 +22,15 @@ export function CardControl({ day, actions, isToday }: Props) {
             : 'marcar como feito'
         }`}
         onClick={actions.toggleCheck}
-        className="flex size-12 shrink-0 items-center justify-center rounded-xl border-2 transition-all active:scale-90"
-        style={{ borderColor: habit.color, backgroundColor: done ? habit.color : 'transparent' }}
+        className={`flex size-10 shrink-0 items-center justify-center rounded-lg border-2 transition-all active:scale-90 ${
+          done ? 'border-slate-800 text-slate-800' : 'bg-white/70'
+        }`}
+        style={done ? undefined : { borderColor: `${habit.color}99` }}
       >
         {done && (
           <svg
             viewBox="0 0 24 24"
-            className="size-6 text-white"
+            className="size-5"
             fill="none"
             stroke="currentColor"
             strokeWidth={3}
@@ -92,12 +94,10 @@ function StepButton(props: {
       aria-label={props.label}
       disabled={props.disabled}
       onClick={props.onClick}
-      className="flex size-11 items-center justify-center rounded-full border-2 text-xl font-semibold transition-all active:scale-90 disabled:opacity-30"
-      style={{
-        borderColor: props.color,
-        backgroundColor: props.filled ? props.color : 'transparent',
-        color: props.filled ? 'white' : props.color,
-      }}
+      className={`flex size-10 items-center justify-center rounded-full border-2 text-xl font-semibold text-slate-700 transition-all active:scale-90 disabled:opacity-30 ${
+        props.filled ? 'bg-white' : 'bg-white/60'
+      }`}
+      style={{ borderColor: `${props.color}99` }}
     >
       {props.children}
     </button>

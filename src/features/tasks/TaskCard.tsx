@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Task } from '../../types/domain.ts'
+import { CardFill } from '../../components/ui/CardFill.tsx'
 
 type Props = {
   task: Task
@@ -19,12 +20,19 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
 
   return (
     <li
-      className={`relative flex min-h-18 items-center gap-2 rounded-2xl border bg-white p-3 pl-4 transition-colors ${
-        done ? 'border-brand-500' : ''
+      className={`relative flex min-h-16 items-center gap-3 rounded-full border bg-white py-2 pr-2 pl-2 transition-colors ${
+        done ? 'border-transparent' : 'border-slate-200'
       }`}
     >
+      <CardFill ratio={done ? 1 : 0} color="#6366f155" />
       <span
-        className={`min-w-0 flex-1 truncate font-semibold ${done ? 'text-slate-400 line-through' : ''}`}
+        aria-hidden
+        className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-xl"
+      >
+        📝
+      </span>
+      <span
+        className={`relative min-w-0 flex-1 truncate font-semibold ${done ? 'text-slate-500 line-through' : ''}`}
       >
         {task.title}
       </span>
@@ -65,14 +73,14 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
         aria-pressed={done}
         aria-label={`${task.title}: ${done ? 'feita, toque para desmarcar' : 'marcar como feita'}`}
         onClick={onToggle}
-        className={`border-brand-500 flex size-12 shrink-0 items-center justify-center rounded-xl border-2 transition-all active:scale-90 ${
-          done ? 'bg-brand-500 text-white' : ''
+        className={`relative flex size-10 shrink-0 items-center justify-center rounded-lg border-2 transition-all active:scale-90 ${
+          done ? 'border-slate-800 text-slate-800' : 'border-brand-500/60 bg-white/70'
         }`}
       >
         {done && (
           <svg
             viewBox="0 0 24 24"
-            className="size-6"
+            className="size-5"
             fill="none"
             stroke="currentColor"
             strokeWidth={3}

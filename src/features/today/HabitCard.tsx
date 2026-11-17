@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { CardFill } from '../../components/ui/CardFill.tsx'
 import { CardControl } from './CardControl.tsx'
 import { HabitMenu } from './HabitMenu.tsx'
 import { progressLabel, streakLabel, type HabitDay } from './habitDay.ts'
@@ -17,39 +18,41 @@ export function HabitCard({ day, actions, isToday, reorder }: Props) {
   const completed = state === 'completed'
   const skipped = state === 'skipped'
   const progress = progressLabel(day)
-  const ratio = Math.min(1, day.progress / habit.goal_target)
+  const ratio = completed || skipped ? 1 : Math.min(1, day.progress / habit.goal_target)
 
   return (
     <li
-      className={`relative flex min-h-18 flex-col rounded-2xl border bg-white transition-colors ${
-        skipped || !day.scheduled ? 'opacity-60' : ''
-      }`}
-      style={{ borderColor: completed ? habit.color : undefined }}
+      className={`relative flex min-h-16 items-center gap-3 rounded-full border bg-white py-2 pr-2 pl-2 transition-colors ${
+        ratio > 0 ? 'border-transparent' : 'border-slate-200'
+      } ${skipped || !day.scheduled ? 'opacity-60' : ''}`}
     >
-      <div className="flex items-center gap-2 p-3 pl-4">
-        <span className="text-2xl" aria-hidden>
-          {habit.icon}
+      <CardFill ratio={ratio} color={skipped ? '#e2e8f0' : `${habit.color}55`} />
+
+      <span
+        className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-xl"
+        aria-hidden
+      >
+        {habit.icon}
+      </span>
+
+      <Link to={`/habits/${habit.id}`} className="relative min-w-0 flex-1 py-1">
+        <span className="block truncate font-semibold">{habit.name}</span>
+        <span className="block truncate text-sm text-slate-600">
+          {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]
+            .filter(Boolean)
+            .join(' · ')}
         </span>
+        {day.noteEntry?.note && (
+          <span className="block truncate text-sm text-slate-500 italic">{day.noteEntry.note}</span>
+        )}
+      </Link>
 
-        <Link to={`/habits/${habit.id}`} className="min-w-0 flex-1 py-1">
-          <span className="block truncate font-semibold">{habit.name}</span>
-          <span className="block text-sm text-slate-500">
-            {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]
-              .filter(Boolean)
-              .join(' · ')}
-          </span>
-          {day.noteEntry?.note && (
-            <span className="block truncate text-sm text-slate-400 italic">
-              {day.noteEntry.note}
-            </span>
-          )}
-        </Link>
-
+      <div className="relative flex items-center gap-1">
         {reorder && (
-          <div className="flex gap-1">
+          <>
             <ArrowButton label={`Mover ${habit.name} para cima`} onClick={reorder.onUp} up />
             <ArrowButton label={`Mover ${habit.name} para baixo`} onClick={reorder.onDown} />
-          </div>
+          </>
         )}
         {actions && !reorder && (
           <>
@@ -58,15 +61,6 @@ export function HabitCard({ day, actions, isToday, reorder }: Props) {
           </>
         )}
       </div>
-
-      {progress && (
-        <div className="mx-4 mb-3 h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden>
-          <div
-            className="h-full transition-all"
-            style={{ width: `${ratio * 100}%`, backgroundColor: habit.color }}
-          />
-        </div>
-      )}
     </li>
   )
 }
@@ -86,7 +80,7 @@ function ArrowButton({
       aria-label={label}
       onClick={onClick}
       disabled={!onClick}
-      className="flex size-11 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+      className="flex size-10 items-center justify-center rounded-full bg-white/70 text-slate-600 hover:bg-white disabled:opacity-30"
     >
       <svg
         viewBox="0 0 24 24"

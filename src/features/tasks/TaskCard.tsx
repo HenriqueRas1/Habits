@@ -73,7 +73,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
         aria-pressed={done}
         aria-label={`${task.title}: ${done ? 'feita, toque para desmarcar' : 'marcar como feita'}`}
         onClick={onToggle}
-        className={`relative flex size-10 shrink-0 items-center justify-center rounded-lg border-2 transition-all active:scale-90 ${
+        className={`relative flex size-10 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90 ${
           done ? 'border-slate-800 text-slate-800' : 'border-brand-500/60 bg-white/70'
         }`}
       >

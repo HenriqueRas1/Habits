@@ -22,7 +22,7 @@ export function CardControl({ day, actions, isToday }: Props) {
             : 'marcar como feito'
         }`}
         onClick={actions.toggleCheck}
-        className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90"
+        className="flex size-12 shrink-0 items-center justify-center rounded-xl border-2 transition-all active:scale-90"
         style={{ borderColor: habit.color, backgroundColor: done ? habit.color : 'transparent' }}
       >
         {done && (

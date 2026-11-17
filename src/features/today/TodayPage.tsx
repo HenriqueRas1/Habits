@@ -1,19 +1,21 @@
 import { useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { Alert } from '../../components/ui/Alert.tsx'
 import { Button } from '../../components/ui/Button.tsx'
 import { FullScreenSpinner } from '../../components/ui/FullScreenSpinner.tsx'
-import { isDateString } from '../../lib/dates.ts'
+import { addDays, formatDayLabel, isDateString } from '../../lib/dates.ts'
 import type { Entry } from '../../types/domain.ts'
 import { useSession } from '../auth/sessionContext.ts'
 import { useAllEntries } from '../entries/hooks.ts'
 import { useHabits, useReorderHabits } from '../habits/hooks.ts'
 import { useToday, useWeekStart } from '../profile/hooks.ts'
+import { useAddTask } from '../tasks/hooks.ts'
+import { TasksSection } from '../tasks/TasksSection.tsx'
+import { AddMenu } from './AddMenu.tsx'
 import { DateNav } from './DateNav.tsx'
 import { EmptyToday } from './EmptyToday.tsx'
 import { buildHabitDay } from './habitDay.ts'
 import { HabitCard } from './HabitCard.tsx'
-import { NewHabitFab } from './NewHabitFab.tsx'
 import { useDayActions } from './useDayActions.ts'
 
 export function TodayPage() {
@@ -33,6 +35,10 @@ export function TodayPage() {
   const raw = params.get('date') ?? today
   const date = isDateString(raw) && raw <= today && raw >= from ? raw : today
   const setDate = (d: string) => setParams(d === today ? {} : { date: d }, { replace: true })
+  const userId = session?.user.id ?? ''
+  const addTask = useAddTask(date, userId)
+  const dayLabel =
+    date === today ? 'hoje' : date === addDays(today, -1) ? 'ontem' : formatDayLabel(date)
 
   const byHabit = useMemo(() => {
     const map = new Map<string, Entry[]>()
@@ -61,22 +67,20 @@ export function TodayPage() {
     <>
       <header className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold tracking-tight">Hoje</h1>
-        {list.length > 0 && (
-          <div className="flex items-center gap-2">
-            {list.length > 1 && (
-              <Button variant="secondary" onClick={() => setReordering((r) => !r)}>
-                {reordering ? 'Concluir' : 'Reordenar'}
-              </Button>
-            )}
-            <Link
-              to="/habits/new"
-              className="bg-brand-600 hover:bg-brand-700 hidden min-h-11 items-center rounded-lg px-4 text-sm font-semibold text-white lg:inline-flex"
-            >
-              Novo hábito
-            </Link>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {list.length > 1 && (
+            <Button variant="secondary" onClick={() => setReordering((r) => !r)}>
+              {reordering ? 'Concluir' : 'Reordenar'}
+            </Button>
+          )}
+          <AddMenu dayLabel={dayLabel} onAddTask={addTask} />
+        </div>
       </header>
+
+      {!reordering && list.length > 0 && (
+        <DateNav date={date} today={today} min={from} onChange={setDate} />
+      )}
+      {!reordering && <TasksSection date={date} userId={userId} />}
 
       {list.length === 0 ? (
         <EmptyToday />
@@ -96,7 +100,7 @@ export function TodayPage() {
         </ul>
       ) : (
         <>
-          <DateNav date={date} today={today} min={from} onChange={setDate} />
+          <h2 className="mb-3 text-lg font-semibold">Hábitos</h2>
           <DayList days={scheduled} actionsFor={actionsFor} isToday={date === today} />
           {offSchedule.length > 0 && (
             <>
@@ -108,8 +112,6 @@ export function TodayPage() {
           )}
         </>
       )}
-
-      <NewHabitFab />
     </>
   )
 }

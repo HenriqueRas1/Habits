@@ -4,6 +4,7 @@ import type { Habit, HabitUpdate } from '../../types/domain.ts'
 import {
   archiveHabit,
   createHabit,
+  deleteHabit,
   fetchHabits,
   reorderHabits,
   updateHabit,
@@ -97,5 +98,20 @@ export function useReorderHabits() {
       ),
     onError: (_e, _v, ctx) => rollback(client, ctx, 'Não foi possível mudar a ordem.'),
     onSettled: () => client.invalidateQueries({ queryKey: habitsKey }),
+  })
+}
+
+/** Apagar de vez: some da lista na hora; registros saem do cache depois da confirmação. */
+export function useDeleteHabit() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteHabit(id),
+    onMutate: (id) =>
+      applyOptimistic<Habit[]>(client, habitsKey, (old) => old.filter((h) => h.id !== id)),
+    onError: (_e, _v, ctx) => rollback(client, ctx, 'Não foi possível apagar o hábito.'),
+    onSettled: () => {
+      void client.invalidateQueries({ queryKey: habitsKey })
+      void client.invalidateQueries({ queryKey: ['entries'] })
+    },
   })
 }

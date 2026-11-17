@@ -15,6 +15,7 @@ vi.mock('../features/habits/api.ts', () => ({
   createHabit: vi.fn(async () => undefined),
   updateHabit: vi.fn(async () => undefined),
   archiveHabit: vi.fn(async () => undefined),
+  deleteHabit: vi.fn(async () => undefined),
   reorderHabits: vi.fn(async () => undefined),
 }))
 

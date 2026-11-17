@@ -6,7 +6,14 @@ import { useSession } from '../auth/sessionContext.ts'
 import { useToday } from '../profile/hooks.ts'
 import { HabitForm } from './HabitForm.tsx'
 import { fromHabit, newHabitDefaults, toHabitFields, type HabitFormValues } from './habitSchema.ts'
-import { useArchiveHabit, useCreateHabit, useHabit, useHabits, useUpdateHabit } from './hooks.ts'
+import {
+  useArchiveHabit,
+  useCreateHabit,
+  useDeleteHabit,
+  useHabit,
+  useHabits,
+  useUpdateHabit,
+} from './hooks.ts'
 
 /** /habits/new e /habits/:id/edit */
 export function HabitFormPage() {
@@ -20,6 +27,7 @@ export function HabitFormPage() {
   const create = useCreateHabit(session?.user.id ?? '')
   const update = useUpdateHabit()
   const archive = useArchiveHabit()
+  const remove = useDeleteHabit()
 
   const goHome = () => void navigate('/', { replace: true })
 
@@ -58,6 +66,18 @@ export function HabitFormPage() {
     goHome()
   }
 
+  function handleDelete() {
+    if (!habit) return
+    if (
+      !window.confirm(
+        `Apagar "${habit.name}" de vez? Todo o histórico dele também será apagado, e isso não pode ser desfeito. Se quiser só tirar da tela Hoje, use Arquivar.`,
+      )
+    )
+      return
+    remove.mutate(habit.id)
+    goHome()
+  }
+
   return (
     <>
       <PageHeader title={habit ? 'Editar hábito' : 'Novo hábito'} />
@@ -72,9 +92,12 @@ export function HabitFormPage() {
         />
       </section>
       {habit && (
-        <div className="mt-6 text-center">
+        <div className="mt-6 flex justify-center gap-6">
           <Button variant="dangerLink" onClick={handleArchive}>
             Arquivar hábito
+          </Button>
+          <Button variant="dangerLink" onClick={handleDelete}>
+            Apagar hábito
           </Button>
         </div>
       )}

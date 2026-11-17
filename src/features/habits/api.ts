@@ -39,3 +39,9 @@ export async function reorderHabits(orderedIds: string[]): Promise<void> {
   const failed = results.find((r) => r.error)
   if (failed?.error) throw failed.error
 }
+
+/** Apaga o hábito de vez. Os registros e o timer dele são apagados junto (on delete cascade). */
+export async function deleteHabit(id: string): Promise<void> {
+  const { error } = await supabase.from('habits').delete().eq('id', id)
+  if (error) throw error
+}

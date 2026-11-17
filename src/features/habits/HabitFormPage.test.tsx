@@ -142,4 +142,21 @@ describe('HabitFormPage', () => {
       ),
     )
   })
+
+  it('apaga de vez só depois de confirmar', async () => {
+    const habit = makeHabit({ name: 'Ler' })
+    vi.mocked(habitsApi.fetchHabits).mockResolvedValue([habit])
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true)
+
+    renderApp(`/habits/${habit.id}/edit`)
+    const user = userEvent.setup()
+    const button = await screen.findByRole('button', { name: 'Apagar hábito' })
+
+    await user.click(button)
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('não pode ser desfeito'))
+    expect(habitsApi.deleteHabit).not.toHaveBeenCalled()
+
+    await user.click(button)
+    await vi.waitFor(() => expect(habitsApi.deleteHabit).toHaveBeenCalledWith(habit.id))
+  })
 })

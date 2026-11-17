@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createBrowserRouter } from 'react-router'
 import { AuthProvider } from './features/auth/AuthProvider.tsx'
+import { UpdatePrompt } from './features/pwa/UpdatePrompt.tsx'
 import { queryClient } from './lib/queryClient.ts'
 import { routes } from './routes.tsx'
 
@@ -11,6 +12,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} />
+        <UpdatePrompt />
       </AuthProvider>
     </QueryClientProvider>
   )

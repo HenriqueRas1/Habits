@@ -3,7 +3,7 @@ import { navItems } from './navItems.tsx'
 
 export function Sidebar() {
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-8 lg:flex">
+    <aside className="bg-surface sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-slate-200 px-4 py-8 lg:flex">
       <p className="text-brand-600 mb-8 px-3 text-xl font-bold">Hábitos</p>
       <nav aria-label="Navegação principal">
         <ul className="flex flex-col gap-1">

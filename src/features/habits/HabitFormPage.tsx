@@ -86,7 +86,7 @@ export function HabitFormPage() {
   return (
     <>
       <PageHeader title={habit ? 'Editar hábito' : 'Novo hábito'} />
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+      <section className="bg-surface rounded-2xl border border-slate-200 p-5">
         <HabitForm
           key={habit?.id ?? 'new'}
           today={today}

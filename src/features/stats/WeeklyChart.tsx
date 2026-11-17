@@ -20,7 +20,7 @@ export function WeeklyChart({ bars }: { bars: WeekBar[] }) {
             axisLine={false}
           />
           <Tooltip
-            cursor={{ fill: '#f1f5f9' }}
+            cursor={{ fill: 'var(--color-slate-100)' }}
             formatter={(_v, _n, item) => [
               `${item.payload.done} de ${item.payload.total} dias`,
               `Semana de ${item.payload.week}`,

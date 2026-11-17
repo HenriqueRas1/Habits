@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useHabitLink } from './useHabitLink.ts'
 import { CardFill } from '../../components/ui/CardFill.tsx'
 import type { ActiveTimer } from '../../types/domain.ts'
 import { CardControl } from './CardControl.tsx'
@@ -17,6 +18,7 @@ type Props = {
 
 export function HabitCard({ day, actions, isToday, reorder, timer }: Props) {
   const { habit, state } = day
+  const habitLink = useHabitLink()
   const completed = state === 'completed'
   const skipped = state === 'skipped'
   const progress = progressLabel(day)
@@ -24,20 +26,20 @@ export function HabitCard({ day, actions, isToday, reorder, timer }: Props) {
 
   return (
     <li
-      className={`relative flex min-h-16 items-center gap-3 rounded-full border bg-white py-2 pr-2 pl-2 transition-colors ${
+      className={`bg-surface relative flex min-h-16 items-center gap-3 rounded-full border py-2 pr-2 pl-2 transition-colors ${
         ratio > 0 ? 'border-transparent' : 'border-slate-200'
       } ${skipped || !day.scheduled ? 'opacity-60' : ''}`}
     >
       <CardFill ratio={ratio} color={skipped ? '#e2e8f0' : `${habit.color}55`} />
 
       <span
-        className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-xl"
+        className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"
         aria-hidden
       >
         {habit.icon}
       </span>
 
-      <Link to={`/habits/${habit.id}`} className="relative min-w-0 flex-1 py-1">
+      <Link to={habitLink(habit.id)} className="relative min-w-0 flex-1 py-1">
         <span className="block truncate font-semibold">{habit.name}</span>
         <span className="block truncate text-sm text-slate-600">
           {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]
@@ -82,7 +84,7 @@ function ArrowButton({
       aria-label={label}
       onClick={onClick}
       disabled={!onClick}
-      className="flex size-10 items-center justify-center rounded-full bg-white/70 text-slate-600 hover:bg-white disabled:opacity-30"
+      className="bg-surface/70 hover:bg-surface flex size-10 items-center justify-center rounded-full text-slate-600 disabled:opacity-30"
     >
       <svg
         viewBox="0 0 24 24"

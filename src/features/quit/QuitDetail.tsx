@@ -47,13 +47,21 @@ export function QuitDetail({ habit, entries, today }: Props) {
           : 'Todos os marcos atingidos!'}
       </p>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="bg-surface rounded-2xl border border-slate-200 p-4">
         <MonthCalendar
           month={month}
           min={minMonth}
           max={maxMonth}
           weekStart={weekStart}
-          onMonthChange={(m) => setParams({ month: m }, { replace: true })}
+          onMonthChange={(m) =>
+            setParams(
+              (prev) => {
+                prev.set('month', m)
+                return prev
+              },
+              { replace: true },
+            )
+          }
           renderDay={(date, inMonth) =>
             inMonth ? (
               <span
@@ -75,7 +83,7 @@ export function QuitDetail({ habit, entries, today }: Props) {
 
       <section
         aria-label="Recaídas"
-        className="mt-6 rounded-2xl border border-slate-200 bg-white p-4"
+        className="bg-surface mt-6 rounded-2xl border border-slate-200 p-4"
       >
         <h2 className="font-semibold">Recaídas</h2>
         {relapses.length === 0 ? (

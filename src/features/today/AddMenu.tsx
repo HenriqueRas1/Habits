@@ -44,7 +44,7 @@ export function AddMenu({ dayLabel, onAddTask }: Props) {
           />
           <ul
             role="menu"
-            className="absolute top-full right-0 z-30 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+            className="bg-surface absolute top-full right-0 z-30 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 py-1 shadow-lg"
           >
             <li role="none">
               <Link

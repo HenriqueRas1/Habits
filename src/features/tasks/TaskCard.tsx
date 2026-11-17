@@ -20,14 +20,14 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
 
   return (
     <li
-      className={`relative flex min-h-16 items-center gap-3 rounded-full border bg-white py-2 pr-2 pl-2 transition-colors ${
+      className={`bg-surface relative flex min-h-16 items-center gap-3 rounded-full border py-2 pr-2 pl-2 transition-colors ${
         done ? 'border-transparent' : 'border-slate-200'
       }`}
     >
       <CardFill ratio={done ? 1 : 0} color="#6366f155" />
       <span
         aria-hidden
-        className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-xl"
+        className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"
       >
         📝
       </span>
@@ -57,7 +57,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
             />
             <ul
               role="menu"
-              className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+              className="bg-surface absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-slate-200 py-1 shadow-lg"
             >
               <MenuItem onClick={choose(onEdit)}>Editar tarefa</MenuItem>
               <MenuItem onClick={choose(onDelete)} danger>
@@ -74,13 +74,13 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
         aria-label={`${task.title}: ${done ? 'feita, toque para desmarcar' : 'marcar como feita'}`}
         onClick={onToggle}
         className={`relative flex size-10 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90 ${
-          done ? 'border-slate-800 text-slate-800' : 'border-brand-500/60 bg-white/70'
+          done ? 'border-slate-800 text-slate-800' : 'border-brand-500/60 bg-surface/70'
         }`}
       >
         {done && (
           <svg
             viewBox="0 0 24 24"
-            className="size-5"
+            className="animate-pop size-5"
             fill="none"
             stroke="currentColor"
             strokeWidth={3}

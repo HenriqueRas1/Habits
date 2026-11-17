@@ -21,7 +21,7 @@ export function Segmented<T extends string>({ legend, options, value, onChange }
             onClick={() => onChange(o.value)}
             className={`min-h-10 flex-1 rounded-md px-2 text-sm font-medium transition-colors ${
               value === o.value
-                ? 'text-brand-700 bg-white shadow-sm'
+                ? 'text-brand-700 bg-surface shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >

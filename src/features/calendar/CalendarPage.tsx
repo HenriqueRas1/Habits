@@ -37,7 +37,7 @@ export function CalendarPage() {
   return (
     <>
       <PageHeader title="Calendário" description="Toque num dia para abrir a Hoje naquela data." />
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="bg-surface rounded-2xl border border-slate-200 p-4">
         <MonthCalendar
           month={month}
           min={minMonth}

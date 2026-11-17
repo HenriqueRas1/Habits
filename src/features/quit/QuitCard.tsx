@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { useHabitLink } from '../today/useHabitLink.ts'
 import { CardFill } from '../../components/ui/CardFill.tsx'
 import { PromptDialog } from '../../components/ui/PromptDialog.tsx'
 import { formatQuitDuration, milestones } from '../../domain/quit.ts'
@@ -17,6 +18,7 @@ type Props = { habit: Habit; entries: Entry[]; today: string }
 /** Cartão de hábito de parar: contador ao vivo, recorde, próximo marco e "Registrar recaída". */
 export function QuitCard({ habit, entries, today }: Props) {
   const now = useNow(60_000)
+  const habitLink = useHabitLink()
   const timezone = useTimezone()
   const { session } = useSession()
   const { mutate } = useEntryAction(session?.user.id ?? '')
@@ -32,16 +34,16 @@ export function QuitCard({ habit, entries, today }: Props) {
       : `faltam ${daysToNext} ${daysToNext === 1 ? 'dia' : 'dias'} para ${next}`
 
   return (
-    <li className="relative flex min-h-16 items-center gap-3 rounded-full border border-transparent bg-white py-2 pr-2 pl-2">
+    <li className="bg-surface relative flex min-h-16 items-center gap-3 rounded-full border border-transparent py-2 pr-2 pl-2">
       <CardFill ratio={ratio} color={`${habit.color}55`} />
       <span
         aria-hidden
-        className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-xl"
+        className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"
       >
         {habit.icon}
       </span>
 
-      <Link to={`/habits/${habit.id}`} className="relative min-w-0 flex-1 py-1">
+      <Link to={habitLink(habit.id)} className="relative min-w-0 flex-1 py-1">
         <span className="block truncate font-semibold">{habit.name}</span>
         <span className="block truncate text-sm text-slate-700" aria-label="Tempo sem">
           <strong>{formatQuitDuration(stats.currentMs)}</strong> sem
@@ -56,7 +58,7 @@ export function QuitCard({ habit, entries, today }: Props) {
         type="button"
         onClick={() => setAsking(true)}
         aria-label={`${habit.name}: registrar recaída`}
-        className="relative min-h-10 shrink-0 rounded-full border-2 bg-white/70 px-3 text-sm font-semibold text-slate-700 active:scale-95"
+        className="bg-surface/70 relative min-h-10 shrink-0 rounded-full border-2 px-3 text-sm font-semibold text-slate-700 active:scale-95"
         style={{ borderColor: `${habit.color}99` }}
       >
         Recaída

@@ -16,7 +16,7 @@ function suggestionUrl({ name, icon, kind, target, period, ...rest }: (typeof su
 
 export function EmptyToday() {
   return (
-    <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center">
+    <section className="bg-surface rounded-2xl border border-dashed border-slate-300 p-6 text-center">
       <p className="text-4xl" aria-hidden>
         🌱
       </p>

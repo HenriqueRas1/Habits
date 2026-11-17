@@ -47,7 +47,7 @@ describe('Tarefas do dia', () => {
     const { router } = renderApp('/')
     const user = userEvent.setup()
     await chooseAdd(user, /Hábito/)
-    expect(router.state.location.pathname).toBe('/habits/new')
+    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/habits/new'))
   })
 
   it('cria uma tarefa no dia aberto e mostra na hora', async () => {

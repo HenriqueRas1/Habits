@@ -115,7 +115,7 @@ function Card({
   children: ReactNode
 }) {
   return (
-    <section aria-label={title} className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
+    <section aria-label={title} className="bg-surface mb-6 rounded-2xl border border-slate-200 p-4">
       <h2 className="font-semibold">{title}</h2>
       {subtitle && <p className="mb-3 text-sm text-slate-500">{subtitle}</p>}
       <div className={subtitle ? '' : 'mt-3'}>{children}</div>

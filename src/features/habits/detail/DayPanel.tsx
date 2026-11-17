@@ -45,7 +45,7 @@ export function DayPanel({ habit, date, entries, weekStart, userId }: Props) {
   return (
     <section
       aria-label="Registros do dia"
-      className="mt-6 rounded-2xl border border-slate-200 bg-white p-4"
+      className="bg-surface mt-6 rounded-2xl border border-slate-200 p-4"
     >
       <h2 className="font-semibold first-letter:uppercase">{formatDayLabel(date)}</h2>
 

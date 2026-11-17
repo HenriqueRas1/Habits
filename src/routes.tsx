@@ -3,11 +3,12 @@ import { AppShell } from './components/layout/AppShell.tsx'
 import { LoginPage } from './features/auth/LoginPage.tsx'
 import { ProtectedRoute } from './features/auth/ProtectedRoute.tsx'
 import { ResetPasswordPage } from './features/auth/ResetPasswordPage.tsx'
-import { CalendarPage } from './features/calendar/CalendarPage.tsx'
-import { HabitDetailPage } from './features/habits/detail/HabitDetailPage.tsx'
-import { HabitFormPage } from './features/habits/HabitFormPage.tsx'
-import { SettingsPage } from './features/settings/SettingsPage.tsx'
 import { TodayPage } from './features/today/TodayPage.tsx'
+
+// Telas fora da Hoje carregam sob demanda: o app abre mais rápido (Hoje e login vêm no pacote inicial).
+const habitForm = async () => ({
+  Component: (await import('./features/habits/HabitFormPage.tsx')).HabitFormPage,
+})
 
 export const routes: RouteObject[] = [
   { path: 'login', element: <LoginPage /> },
@@ -19,10 +20,21 @@ export const routes: RouteObject[] = [
         element: <AppShell />,
         children: [
           { index: true, element: <TodayPage /> },
-          { path: 'habits/new', element: <HabitFormPage /> },
-          { path: 'habits/:id', element: <HabitDetailPage /> },
-          { path: 'habits/:id/edit', element: <HabitFormPage /> },
-          { path: 'calendar', element: <CalendarPage /> },
+          { path: 'habits/new', lazy: habitForm },
+          {
+            path: 'habits/:id',
+            lazy: async () => ({
+              Component: (await import('./features/habits/detail/HabitDetailPage.tsx'))
+                .HabitDetailPage,
+            }),
+          },
+          { path: 'habits/:id/edit', lazy: habitForm },
+          {
+            path: 'calendar',
+            lazy: async () => ({
+              Component: (await import('./features/calendar/CalendarPage.tsx')).CalendarPage,
+            }),
+          },
           {
             path: 'stats',
             // Carrega só ao abrir: o Recharts é grande e não precisa pesar na abertura do app.
@@ -30,7 +42,12 @@ export const routes: RouteObject[] = [
               Component: (await import('./features/stats/StatsPage.tsx')).StatsPage,
             }),
           },
-          { path: 'settings', element: <SettingsPage /> },
+          {
+            path: 'settings',
+            lazy: async () => ({
+              Component: (await import('./features/settings/SettingsPage.tsx')).SettingsPage,
+            }),
+          },
         ],
       },
     ],

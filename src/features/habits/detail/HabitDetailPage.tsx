@@ -10,9 +10,17 @@ import { goalText } from '../goalText.ts'
 import { useHabit } from '../hooks.ts'
 import { BuildDetail } from './BuildDetail.tsx'
 
-/** /habits/:id — cabeçalho do hábito e o detalhe do tipo dele (construir ou parar). */
+/** /habits/:id — tela inteira no celular. */
 export function HabitDetailPage() {
   const { id = '' } = useParams()
+  return <HabitDetail id={id} />
+}
+
+/**
+ * Cabeçalho do hábito e o detalhe do tipo dele (construir ou parar).
+ * Usado na tela /habits/:id e no painel lateral da Hoje no PC.
+ */
+export function HabitDetail({ id, onClose }: { id: string; onClose?: () => void }) {
   const today = useToday()
   const weekStart = useWeekStart()
   const { session } = useSession()
@@ -43,14 +51,28 @@ export function HabitDetailPage() {
           {habit.icon}
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-bold tracking-tight">{habit.name}</h1>
+          {onClose ? (
+            <h2 className="truncate text-2xl font-bold tracking-tight">{habit.name}</h2>
+          ) : (
+            <h1 className="truncate text-2xl font-bold tracking-tight">{habit.name}</h1>
+          )}
           <p className="mt-1 text-sm text-slate-500">
             {habit.type === 'quit' ? 'Hábito para parar' : goalText(habit)}
           </p>
         </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar detalhe"
+            className="flex size-11 items-center justify-center rounded-lg text-xl text-slate-500 hover:bg-slate-100"
+          >
+            ✕
+          </button>
+        )}
         <Link
           to={`/habits/${habit.id}/edit`}
-          className="flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          className="bg-surface flex min-h-11 items-center rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50"
         >
           Editar
         </Link>

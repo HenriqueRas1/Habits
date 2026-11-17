@@ -52,7 +52,7 @@ function NavButton(props: {
       aria-label={props.label}
       disabled={props.disabled}
       onClick={props.onClick}
-      className="flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+      className="bg-surface flex size-11 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30"
     >
       <svg
         viewBox="0 0 24 24"

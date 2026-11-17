@@ -167,6 +167,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          theme: string
           timezone: string
           updated_at: string
           week_start: number
@@ -175,6 +176,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id: string
+          theme?: string
           timezone?: string
           updated_at?: string
           week_start?: number
@@ -183,6 +185,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          theme?: string
           timezone?: string
           updated_at?: string
           week_start?: number

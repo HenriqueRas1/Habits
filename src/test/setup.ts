@@ -17,12 +17,22 @@ vi.mock('../lib/realtime.ts', () => ({
 }))
 
 // Testes de unidade nunca falam com o banco: cada teste define o que a API devolve.
+// Service worker do PWA não existe no jsdom.
+vi.mock('virtual:pwa-register/react', () => ({
+  useRegisterSW: () => ({
+    needRefresh: [false, () => undefined],
+    offlineReady: [false, () => undefined],
+    updateServiceWorker: async () => undefined,
+  }),
+}))
+
 vi.mock('../features/habits/api.ts', () => ({
   fetchHabits: vi.fn(async () => []),
   createHabit: vi.fn(async () => undefined),
   updateHabit: vi.fn(async () => undefined),
   archiveHabit: vi.fn(async () => undefined),
   deleteHabit: vi.fn(async () => undefined),
+  fetchArchivedHabits: vi.fn(async () => []),
   reorderHabits: vi.fn(async () => undefined),
 }))
 
@@ -49,6 +59,7 @@ vi.mock('../features/timers/api.ts', () => ({
 
 vi.mock('../features/profile/api.ts', () => ({
   fetchProfile: vi.fn(async () => null),
+  updateProfile: vi.fn(async () => undefined),
 }))
 
 afterEach(() => {

@@ -27,9 +27,9 @@ describe('AppShell', () => {
     expect(router.state.location.pathname).toBe('/stats')
   })
 
-  it('marca a aba ativa', () => {
+  it('marca a aba ativa', async () => {
     renderApp('/calendar')
-    const active = screen.getAllByRole('link', { current: 'page' })
+    const active = await screen.findAllByRole('link', { current: 'page' })
     expect(active.every((a) => a.textContent === 'Calendário')).toBe(true)
   })
 

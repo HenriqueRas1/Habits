@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { Alert } from '../../components/ui/Alert.tsx'
 import { Button } from '../../components/ui/Button.tsx'
-import { FullScreenSpinner } from '../../components/ui/FullScreenSpinner.tsx'
 import { addDays, formatDayLabel, isDateString } from '../../lib/dates.ts'
 import type { Entry } from '../../types/domain.ts'
 import { useSession } from '../auth/sessionContext.ts'
@@ -15,10 +14,12 @@ import { useTimers } from '../timers/hooks.ts'
 import { TasksSection } from '../tasks/TasksSection.tsx'
 import { AddMenu } from './AddMenu.tsx'
 import { DateNav } from './DateNav.tsx'
+import { WithDetailPanel } from './DetailPanel.tsx'
 import { EmptyToday } from './EmptyToday.tsx'
 import { buildHabitDay } from './habitDay.ts'
 import { HabitCard } from './HabitCard.tsx'
 import { DayList } from './DayList.tsx'
+import { TodaySkeleton } from './TodaySkeleton.tsx'
 import { useDayActions } from './useDayActions.ts'
 
 export function TodayPage() {
@@ -50,7 +51,7 @@ export function TodayPage() {
     return map
   }, [entries.data])
 
-  if (habits.isPending || (list.length > 0 && entries.isPending)) return <FullScreenSpinner />
+  if (habits.isPending || (list.length > 0 && entries.isPending)) return <TodaySkeleton />
   if (habits.isError || entries.isError) {
     return <Alert tone="error">Não foi possível carregar seus hábitos. Verifique a internet.</Alert>
   }
@@ -69,7 +70,7 @@ export function TodayPage() {
   }
 
   return (
-    <>
+    <WithDetailPanel>
       <header className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold tracking-tight">Hoje</h1>
         <div className="flex items-center gap-2">
@@ -137,6 +138,6 @@ export function TodayPage() {
           )}
         </>
       )}
-    </>
+    </WithDetailPanel>
   )
 }

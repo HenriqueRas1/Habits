@@ -5,7 +5,7 @@ export function TabBar() {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+      className="bg-surface/95 fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
     >
       <ul className="mx-auto flex max-w-xl">
         {navItems.map((item) => (

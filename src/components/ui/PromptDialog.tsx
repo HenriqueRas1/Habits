@@ -38,14 +38,14 @@ export function PromptDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center">
       <form
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${id}-title`}
         onSubmit={submit}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
-        className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
+        className="bg-surface w-full max-w-sm rounded-2xl p-5 shadow-xl"
       >
         <h2 id={`${id}-title`} className="text-lg font-semibold">
           {title}

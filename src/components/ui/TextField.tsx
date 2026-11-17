@@ -19,7 +19,7 @@ export function TextField({ label, error, className = '', ...rest }: Props) {
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         {...rest}
-        className={`focus:border-brand-500 focus:ring-brand-100 min-h-11 rounded-lg border bg-white px-3 text-base outline-none focus:ring-2 ${
+        className={`focus:border-brand-500 focus:ring-brand-100 bg-surface min-h-11 rounded-lg border px-3 text-base outline-none focus:ring-2 ${
           error ? 'border-red-400' : 'border-slate-300'
         } ${className}`}
       />

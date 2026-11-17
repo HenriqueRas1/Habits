@@ -4,6 +4,8 @@ import { Alert } from '../../components/ui/Alert.tsx'
 import { Button } from '../../components/ui/Button.tsx'
 import { signOut } from '../auth/api.ts'
 import { useSession } from '../auth/sessionContext.ts'
+import { ArchivedCard } from './ArchivedCard.tsx'
+import { PreferencesCard } from './PreferencesCard.tsx'
 
 export function SettingsPage() {
   const { session } = useSession()
@@ -23,8 +25,10 @@ export function SettingsPage() {
 
   return (
     <>
-      <PageHeader title="Ajustes" description="Fuso, início da semana, tema e dados." />
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+      <PageHeader title="Ajustes" />
+      <PreferencesCard userId={session?.user.id ?? ''} />
+      <ArchivedCard />
+      <section aria-label="Conta" className="bg-surface rounded-2xl border border-slate-200 p-5">
         <h2 className="text-sm font-semibold text-slate-500">Conta</h2>
         <p className="mt-1 mb-4 break-all">{session?.user.email}</p>
         {error && (

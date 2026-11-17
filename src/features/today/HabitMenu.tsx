@@ -41,7 +41,7 @@ export function HabitMenu({ day, actions }: { day: HabitDay; actions: DayActions
           />
           <ul
             role="menu"
-            className="absolute right-0 z-20 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+            className="bg-surface absolute right-0 z-20 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 py-1 shadow-lg"
           >
             {day.skipEntry ? (
               <MenuItem onClick={choose(actions.unskip)}>Desfazer pulo</MenuItem>

@@ -33,7 +33,7 @@ export function TimerButton({ habit, timer, doneToday, date }: Props) {
             : `${habit.name}: abrir timer`
         }
         onClick={() => setOpen(true)}
-        className={`flex h-10 shrink-0 items-center justify-center rounded-full border-2 bg-white/70 font-semibold tabular-nums transition-all active:scale-90 ${
+        className={`bg-surface/70 flex h-10 shrink-0 items-center justify-center rounded-full border-2 font-semibold tabular-nums transition-all active:scale-90 ${
           timer ? 'px-3 text-sm' : 'w-10'
         }`}
         style={{ borderColor: `${habit.color}99` }}

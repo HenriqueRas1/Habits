@@ -73,7 +73,7 @@ export function LoginPage() {
               aria-selected={mode === m}
               onClick={() => switchMode(m)}
               className={`min-h-10 rounded-md text-sm font-medium ${
-                mode === m ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
+                mode === m ? 'bg-surface text-slate-900 shadow-sm' : 'text-slate-500'
               }`}
             >
               {titles[m]}

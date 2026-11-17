@@ -5,6 +5,7 @@ import {
   archiveHabit,
   createHabit,
   deleteHabit,
+  fetchArchivedHabits,
   fetchHabits,
   reorderHabits,
   updateHabit,
@@ -113,5 +114,23 @@ export function useDeleteHabit() {
       void client.invalidateQueries({ queryKey: habitsKey })
       void client.invalidateQueries({ queryKey: ['entries'] })
     },
+  })
+}
+
+export const archivedHabitsKey = ['habits', 'archived'] as const
+
+export function useArchivedHabits() {
+  return useQuery({ queryKey: archivedHabitsKey, queryFn: fetchArchivedHabits })
+}
+
+/** Desarquivar: sai da lista de arquivados na hora e volta para a Hoje. */
+export function useUnarchiveHabit() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => updateHabit(id, { archived_at: null }),
+    onMutate: (id) =>
+      applyOptimistic<Habit[]>(client, archivedHabitsKey, (old) => old.filter((h) => h.id !== id)),
+    onError: (_e, _v, ctx) => rollback(client, ctx, 'Não foi possível desarquivar o hábito.'),
+    onSettled: () => client.invalidateQueries({ queryKey: habitsKey }),
   })
 }

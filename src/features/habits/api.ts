@@ -45,3 +45,14 @@ export async function deleteHabit(id: string): Promise<void> {
   const { error } = await supabase.from('habits').delete().eq('id', id)
   if (error) throw error
 }
+
+/** Hábitos arquivados, do mais recente para o mais antigo (Ajustes). */
+export async function fetchArchivedHabits(): Promise<Habit[]> {
+  const { data, error } = await supabase
+    .from('habits')
+    .select('*')
+    .not('archived_at', 'is', null)
+    .order('archived_at', { ascending: false })
+  if (error) throw error
+  return data
+}

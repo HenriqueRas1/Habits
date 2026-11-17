@@ -47,13 +47,21 @@ export function BuildDetail({ habit, entries, today, weekStart, userId }: Props)
         />
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="bg-surface rounded-2xl border border-slate-200 p-4">
         <MonthCalendar
           month={month}
           min={minMonth}
           max={maxMonth}
           weekStart={weekStart}
-          onMonthChange={(m) => setParams({ month: m }, { replace: true })}
+          onMonthChange={(m) =>
+            setParams(
+              (prev) => {
+                prev.set('month', m)
+                return prev
+              },
+              { replace: true },
+            )
+          }
           renderDay={(date, inMonth) =>
             inMonth ? (
               <HabitDayCell
@@ -82,7 +90,7 @@ export function BuildDetail({ habit, entries, today, weekStart, userId }: Props)
 
 export function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="bg-surface rounded-2xl border border-slate-200 p-4">
       <p className="text-sm text-slate-500">{label}</p>
       <p className="mt-1 text-lg font-semibold">{value}</p>
     </div>

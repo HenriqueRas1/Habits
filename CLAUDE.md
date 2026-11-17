@@ -17,7 +17,7 @@ vite-plugin-pwa, Vitest + Testing Library. Lint com oxlint, formatação com Pre
 - Regras de negócio só em src/domain/, como funções puras. Sem React, Supabase ou Date.now();
   "hoje" e "agora" chegam por parâmetro.
 - Acesso ao Supabase só em src/features/*/api.ts. Componentes usam hooks do TanStack Query.
-- Query keys: ['habits'], ['entries', habitId, from, to], ['timers'], ['profile'].
+- Query keys: ['habits'], ['entries', habitId, from, to], ['tasks', date], ['timers'], ['profile'].
 - Realtime: uma assinatura em src/lib/realtime.ts que só invalida query keys.
 - Gravações com id gerado no cliente (crypto.randomUUID()) e atualização otimista.
 - Datas de calendário como string YYYY-MM-DD no fuso do perfil (padrão America/Sao_Paulo).
@@ -46,7 +46,7 @@ vite-plugin-pwa, Vitest + Testing Library. Lint com oxlint, formatação com Pre
   TS 7, por isso o lint é feito com oxlint (.oxlintrc.json) em vez de ESLint.
 
 ## Fase atual
-Fase 5 — Timer e "dias sem". (Atualize esta linha ao terminar cada fase.)
+Fase 4.5 — Tarefas do dia (antes da Fase 5 — Timer e "dias sem"). (Atualize esta linha ao terminar cada fase.)
 Fase 0 concluída: base do projeto, AppShell e deploy na Vercel conferidos no PC e no iPhone.
 Fase 1 concluída: migração 0001 aplicada, login por email e senha, RLS testado
 (npm run test:rls), login conferido no PC e no iPhone.

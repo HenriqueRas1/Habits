@@ -25,6 +25,13 @@ vi.mock('../features/entries/api.ts', () => ({
   updateEntry: vi.fn(async () => undefined),
 }))
 
+vi.mock('../features/tasks/api.ts', () => ({
+  fetchTasks: vi.fn(async () => []),
+  createTask: vi.fn(async () => undefined),
+  updateTask: vi.fn(async () => undefined),
+  deleteTask: vi.fn(async () => undefined),
+}))
+
 vi.mock('../features/profile/api.ts', () => ({
   fetchProfile: vi.fn(async () => null),
 }))

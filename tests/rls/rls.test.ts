@@ -31,6 +31,7 @@ describe('RLS: um usuário não acessa dados de outro', () => {
   let a: { client: Client; userId: string }
   let b: { client: Client; userId: string }
   let habitId: string
+  let taskId: string
 
   beforeAll(async () => {
     a = await login(env('RLS_USER_A_EMAIL'), env('RLS_USER_A_PASSWORD'))
@@ -41,10 +42,17 @@ describe('RLS: um usuário não acessa dados de outro', () => {
       .from('habits')
       .insert({ id: habitId, name: 'Teste RLS', start_date: '2026-01-01' })
     if (error) throw new Error(`A não conseguiu criar o hábito: ${error.message}`)
+
+    taskId = crypto.randomUUID()
+    const task = await a.client
+      .from('tasks')
+      .insert({ id: taskId, title: 'Tarefa RLS', task_date: '2026-01-01' })
+    if (task.error) throw new Error(`A não conseguiu criar a tarefa: ${task.error.message}`)
   })
 
   afterAll(async () => {
     if (habitId) await a.client.from('habits').delete().eq('id', habitId)
+    if (taskId) await a.client.from('tasks').delete().eq('id', taskId)
     await a?.client.auth.signOut()
     await b?.client.auth.signOut()
   })
@@ -92,6 +100,24 @@ describe('RLS: um usuário não acessa dados de outro', () => {
     const { error } = await b.client
       .from('habits')
       .insert({ name: 'falso', start_date: '2026-01-01', user_id: a.userId })
+    expect(error).not.toBeNull()
+  })
+
+  it('B não lê as tarefas de A', async () => {
+    const { data, error } = await b.client.from('tasks').select('id').eq('id', taskId)
+    expect(error).toBeNull()
+    expect(data).toEqual([])
+  })
+
+  it('B não altera, não apaga nem cria tarefa em nome de A', async () => {
+    await b.client.from('tasks').update({ title: 'invadido' }).eq('id', taskId)
+    await b.client.from('tasks').delete().eq('id', taskId)
+    const mine = await a.client.from('tasks').select('title').eq('id', taskId).single()
+    expect(mine.data?.title).toBe('Tarefa RLS')
+
+    const { error } = await b.client
+      .from('tasks')
+      .insert({ title: 'falsa', task_date: '2026-01-01', user_id: a.userId })
     expect(error).not.toBeNull()
   })
 })

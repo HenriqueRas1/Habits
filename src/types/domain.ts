@@ -13,6 +13,10 @@ export type EntryUpdate = Tables['entries']['Update']
 
 export type Profile = Tables['profiles']['Row']
 
+export type Task = Tables['tasks']['Row']
+export type TaskInsert = Tables['tasks']['Insert']
+export type TaskUpdate = Tables['tasks']['Update']
+
 export type EntryKind = Enums['entry_kind']
 export type GoalKind = Enums['goal_kind']
 export type GoalPeriod = Enums['goal_period']

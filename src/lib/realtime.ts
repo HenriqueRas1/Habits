@@ -6,6 +6,7 @@ const TABLE_KEYS = {
   habits: ['habits'],
   entries: ['entries'],
   active_timers: ['timers'],
+  tasks: ['tasks'],
 } as const
 
 type Table = keyof typeof TABLE_KEYS

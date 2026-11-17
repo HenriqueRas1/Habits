@@ -46,12 +46,13 @@ vite-plugin-pwa, Vitest + Testing Library. Lint com oxlint, formatação com Pre
   TS 7, por isso o lint é feito com oxlint (.oxlintrc.json) em vez de ESLint.
 
 ## Fase atual
-Fase 4.5 — Tarefas do dia (antes da Fase 5 — Timer e "dias sem"). (Atualize esta linha ao terminar cada fase.)
+Fase 5 — Timer e "dias sem". (Atualize esta linha ao terminar cada fase.)
 Fase 0 concluída: base do projeto, AppShell e deploy na Vercel conferidos no PC e no iPhone.
 Fase 1 concluída: migração 0001 aplicada, login por email e senha, RLS testado
 (npm run test:rls), login conferido no PC e no iPhone.
 Fase 2 concluída: CRUD de hábitos, check de um toque na Hoje e sync Realtime conferidos no iPhone e no PC.
 Fase 3 concluída: metas count/duration, períodos semana/mês, dias da semana, pular, nota e registro retroativo conferidos no site.
 Fase 4 concluída: tela do hábito (/habits/:id) com calendário e histórico editável, calendário geral; conferidos no site.
+Fase 4.5 concluída: tarefas do dia (migração 0002, tabela tasks), + com Hábito/Tarefa, cartões em pílula e apagar hábito; conferidos no site.
 Branch padrão do repositório: master. Site: https://habits-cyan-eight.vercel.app
 Supabase CLI v3: comandos remotos precisam de --remote (já embutido em npm run db:push / db:types).

@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, DEFAULT_TIMEZONE, formatDayLabel, isDateString, todayIn } from './dates.ts'
+import {
+  addDays,
+  DEFAULT_TIMEZONE,
+  formatDayLabel,
+  fromDateTimeInput,
+  isDateString,
+  noonIn,
+  todayIn,
+  toDateTimeInput,
+} from './dates.ts'
 
 describe('todayIn', () => {
   it('usa a data de São Paulo, não a UTC', () => {
@@ -41,5 +50,16 @@ describe('isDateString', () => {
 describe('formatDayLabel', () => {
   it('escreve o dia em português', () => {
     expect(formatDayLabel('2026-11-16')).toBe('segunda-feira, 16 de novembro')
+  })
+})
+
+describe('fuso em data e hora', () => {
+  it('meio-dia em São Paulo é 15h UTC', () => {
+    expect(noonIn('2026-03-10', DEFAULT_TIMEZONE)).toBe('2026-03-10T15:00:00.000Z')
+  })
+
+  it('converte o campo datetime-local nos dois sentidos', () => {
+    expect(fromDateTimeInput('2026-03-10T23:30', DEFAULT_TIMEZONE)).toBe('2026-03-11T02:30:00.000Z')
+    expect(toDateTimeInput('2026-03-11T02:30:00.000Z', DEFAULT_TIMEZONE)).toBe('2026-03-10T23:30')
   })
 })

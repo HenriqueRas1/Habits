@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { CardFill } from '../../components/ui/CardFill.tsx'
+import type { ActiveTimer } from '../../types/domain.ts'
 import { CardControl } from './CardControl.tsx'
 import { HabitMenu } from './HabitMenu.tsx'
 import { progressLabel, streakLabel, type HabitDay } from './habitDay.ts'
@@ -11,9 +12,10 @@ type Props = {
   actions?: DayActions
   isToday: boolean
   reorder?: { onUp?: () => void; onDown?: () => void }
+  timer?: ActiveTimer
 }
 
-export function HabitCard({ day, actions, isToday, reorder }: Props) {
+export function HabitCard({ day, actions, isToday, reorder, timer }: Props) {
   const { habit, state } = day
   const completed = state === 'completed'
   const skipped = state === 'skipped'
@@ -57,7 +59,7 @@ export function HabitCard({ day, actions, isToday, reorder }: Props) {
         {actions && !reorder && (
           <>
             <HabitMenu day={day} actions={actions} />
-            <CardControl day={day} actions={actions} isToday={isToday} />
+            <CardControl day={day} actions={actions} isToday={isToday} timer={timer} />
           </>
         )}
       </div>

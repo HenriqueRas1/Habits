@@ -18,6 +18,8 @@ export function CalendarPage() {
   const [params, setParams] = useSearchParams()
   const habits = useHabits()
   const list = habits.data ?? []
+  // Hábitos de parar não têm meta de "fazer": ficam fora da fração do dia.
+  const building = list.filter((h) => h.type === 'build')
   const firstDay = list.reduce((min, h) => (h.start_date < min ? h.start_date : min), today)
 
   const maxMonth = today.slice(0, 7)
@@ -45,7 +47,7 @@ export function CalendarPage() {
           renderDay={(date, inMonth) => {
             if (!inMonth) return null
             const locked = date > today || date < firstDay
-            const c = dayCompletion(list, entries.data ?? [], date)
+            const c = dayCompletion(building, entries.data ?? [], date)
             const ratio = c.total > 0 ? c.done / c.total : 0
             return (
               <button

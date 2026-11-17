@@ -1,12 +1,20 @@
 import { useState } from 'react'
 import { PromptDialog } from '../../components/ui/PromptDialog.tsx'
+import type { ActiveTimer } from '../../types/domain.ts'
+import { TimerButton } from '../timers/TimerButton.tsx'
 import type { HabitDay } from './habitDay.ts'
 import type { DayActions } from './useDayActions.ts'
 
-type Props = { day: HabitDay; actions: DayActions; isToday: boolean }
+type Props = {
+  day: HabitDay
+  actions: DayActions
+  isToday: boolean
+  /** Timer em andamento deste hábito (só hábitos de tempo). */
+  timer?: ActiveTimer
+}
 
 /** O controle principal do cartão: check para metas de check, − e + para quantidade e tempo. */
-export function CardControl({ day, actions, isToday }: Props) {
+export function CardControl({ day, actions, isToday, timer }: Props) {
   const { habit } = day
   const [askMinutes, setAskMinutes] = useState(false)
 
@@ -45,6 +53,14 @@ export function CardControl({ day, actions, isToday }: Props) {
 
   return (
     <div className="flex shrink-0 items-center gap-1.5">
+      {habit.goal_kind === 'duration' && isToday && (
+        <TimerButton
+          habit={habit}
+          timer={timer}
+          doneToday={day.doneEntries.reduce((sum, e) => sum + Number(e.value), 0)}
+          date={day.date}
+        />
+      )}
       <StepButton
         label={`${habit.name}: desfazer o último registro`}
         disabled={day.doneEntries.length === 0}

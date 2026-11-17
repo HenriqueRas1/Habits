@@ -9,13 +9,16 @@ import { useSession } from '../auth/sessionContext.ts'
 import { useAllEntries } from '../entries/hooks.ts'
 import { useHabits, useReorderHabits } from '../habits/hooks.ts'
 import { useToday, useWeekStart } from '../profile/hooks.ts'
+import { QuitCard } from '../quit/QuitCard.tsx'
 import { useAddTask } from '../tasks/hooks.ts'
+import { useTimers } from '../timers/hooks.ts'
 import { TasksSection } from '../tasks/TasksSection.tsx'
 import { AddMenu } from './AddMenu.tsx'
 import { DateNav } from './DateNav.tsx'
 import { EmptyToday } from './EmptyToday.tsx'
 import { buildHabitDay } from './habitDay.ts'
 import { HabitCard } from './HabitCard.tsx'
+import { DayList } from './DayList.tsx'
 import { useDayActions } from './useDayActions.ts'
 
 export function TodayPage() {
@@ -30,6 +33,7 @@ export function TodayPage() {
   const entries = useAllEntries(from, today, habits.isSuccess)
   const actionsFor = useDayActions(session?.user.id ?? '')
   const reorder = useReorderHabits()
+  const timers = useTimers()
   const [reordering, setReordering] = useState(false)
 
   const raw = params.get('date') ?? today
@@ -51,8 +55,9 @@ export function TodayPage() {
     return <Alert tone="error">Não foi possível carregar seus hábitos. Verifique a internet.</Alert>
   }
 
+  const quit = list.filter((h) => h.type === 'quit' && h.start_date <= today)
   const days = list
-    .filter((h) => h.start_date <= date)
+    .filter((h) => h.type === 'build' && h.start_date <= date)
     .map((h) => buildHabitDay(h, byHabit.get(h.id) ?? [], date, today, weekStart))
   const scheduled = days.filter((d) => d.scheduled)
   const offSchedule = days.filter((d) => !d.scheduled)
@@ -100,36 +105,38 @@ export function TodayPage() {
         </ul>
       ) : (
         <>
-          <h2 className="mb-3 text-lg font-semibold">Hábitos</h2>
-          <DayList days={scheduled} actionsFor={actionsFor} isToday={date === today} />
+          {days.length > 0 && <h2 className="mb-3 text-lg font-semibold">Hábitos</h2>}
+          <DayList
+            days={scheduled}
+            actionsFor={actionsFor}
+            isToday={date === today}
+            timers={timers.data ?? []}
+          />
+          {quit.length > 0 && (
+            <>
+              <h2 className="mt-8 mb-3 text-lg font-semibold">Parar</h2>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {quit.map((h) => (
+                  <QuitCard key={h.id} habit={h} entries={byHabit.get(h.id) ?? []} today={today} />
+                ))}
+              </ul>
+            </>
+          )}
           {offSchedule.length > 0 && (
             <>
               <h2 className="mt-6 mb-3 text-sm font-semibold text-slate-500">
                 Fora da agenda neste dia
               </h2>
-              <DayList days={offSchedule} actionsFor={actionsFor} isToday={date === today} />
+              <DayList
+                days={offSchedule}
+                actionsFor={actionsFor}
+                isToday={date === today}
+                timers={timers.data ?? []}
+              />
             </>
           )}
         </>
       )}
     </>
-  )
-}
-
-function DayList({
-  days,
-  actionsFor,
-  isToday,
-}: {
-  days: ReturnType<typeof buildHabitDay>[]
-  actionsFor: ReturnType<typeof useDayActions>
-  isToday: boolean
-}) {
-  return (
-    <ul className="grid gap-3 sm:grid-cols-2">
-      {days.map((day) => (
-        <HabitCard key={day.habit.id} day={day} actions={actionsFor(day)} isToday={isToday} />
-      ))}
-    </ul>
   )
 }

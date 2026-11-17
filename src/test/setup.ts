@@ -33,6 +33,13 @@ vi.mock('../features/tasks/api.ts', () => ({
   deleteTask: vi.fn(async () => undefined),
 }))
 
+vi.mock('../features/timers/api.ts', () => ({
+  fetchTimers: vi.fn(async () => []),
+  startTimer: vi.fn(async () => undefined),
+  updateTimer: vi.fn(async () => undefined),
+  deleteTimer: vi.fn(async () => undefined),
+}))
+
 vi.mock('../features/profile/api.ts', () => ({
   fetchProfile: vi.fn(async () => null),
 }))

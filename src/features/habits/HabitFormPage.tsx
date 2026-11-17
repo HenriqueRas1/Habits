@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 import { PageHeader } from '../../components/layout/PageHeader.tsx'
 import { Button } from '../../components/ui/Button.tsx'
 import { FullScreenSpinner } from '../../components/ui/FullScreenSpinner.tsx'
 import { useSession } from '../auth/sessionContext.ts'
-import { useToday } from '../profile/hooks.ts'
+import { toDateTimeInput } from '../../lib/dates.ts'
+import { useTimezone, useToday } from '../profile/hooks.ts'
 import { HabitForm } from './HabitForm.tsx'
 import { fromHabit, newHabitDefaults, toHabitFields, type HabitFormValues } from './habitSchema.ts'
 import {
@@ -21,6 +23,9 @@ export function HabitFormPage() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const today = useToday()
+  const timezone = useTimezone()
+  // "Agora" fixado ao abrir o formulário: padrão do "Sem desde" de hábitos de parar.
+  const [nowInput] = useState(() => toDateTimeInput(new Date().toISOString(), timezone))
   const { session } = useSession()
   const habits = useHabits()
   const { data: habit, isPending } = useHabit(id)
@@ -41,10 +46,10 @@ export function HabitFormPage() {
     )
   }
 
-  const defaults = habit ? fromHabit(habit) : newHabitDefaults(params, today)
+  const defaults = habit ? fromHabit(habit, timezone) : newHabitDefaults(params, today, nowInput)
 
   function handleSubmit(values: HabitFormValues) {
-    const fields = toHabitFields(values)
+    const fields = toHabitFields(values, timezone)
     if (habit) {
       update.mutate({ id: habit.id, patch: fields })
     } else {

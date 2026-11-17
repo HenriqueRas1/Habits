@@ -13,6 +13,10 @@ export type EntryUpdate = Tables['entries']['Update']
 
 export type Profile = Tables['profiles']['Row']
 
+export type ActiveTimer = Tables['active_timers']['Row']
+export type ActiveTimerInsert = Tables['active_timers']['Insert']
+export type ActiveTimerUpdate = Tables['active_timers']['Update']
+
 export type Task = Tables['tasks']['Row']
 export type TaskInsert = Tables['tasks']['Insert']
 export type TaskUpdate = Tables['tasks']['Update']

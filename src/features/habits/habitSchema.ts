@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isDateString } from '../../lib/dates.ts'
+import { fromDateTimeInput, isDateString, toDateTimeInput } from '../../lib/dates.ts'
 import type { GoalKind, GoalPeriod, Habit, HabitUpdate } from '../../types/domain.ts'
 
 export const HABIT_COLORS = [
@@ -49,6 +49,12 @@ export function habitFormSchema(today: string) {
         .max(60, 'Use no máximo 60 caracteres.'),
       icon: z.string().trim().min(1, 'Escolha um emoji.').max(8, 'Use só um emoji.'),
       color: z.string().regex(/^#[0-9a-f]{6}$/i, 'Cor inválida.'),
+      type: z.enum(['build', 'quit']),
+      /** "Sem desde" de hábitos de parar, no formato de <input type="datetime-local">. */
+      quit_started_at: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, 'Informe a data e a hora.')
+        .refine((v) => v.slice(0, 10) <= today, 'Não pode ser no futuro.'),
       start_date: z
         .string()
         .refine(isDateString, 'Data inválida.')
@@ -78,13 +84,30 @@ export function habitFormSchema(today: string) {
 export type HabitFormValues = z.infer<ReturnType<typeof habitFormSchema>>
 
 /** Converte o formulário nas colunas do banco, normalizando o que não se aplica. */
-export function toHabitFields(v: HabitFormValues) {
+export function toHabitFields(v: HabitFormValues, timezone: string) {
+  if (v.type === 'quit') {
+    return {
+      name: v.name,
+      icon: v.icon,
+      color: v.color,
+      type: 'quit',
+      quit_started_at: fromDateTimeInput(v.quit_started_at, timezone),
+      start_date: v.quit_started_at.slice(0, 10),
+      goal_kind: 'check',
+      goal_period: 'day',
+      goal_target: 1,
+      goal_unit: null,
+      schedule_days: null,
+    } satisfies HabitUpdate
+  }
   const daily = v.goal_period === 'day'
   const days = [...new Set(v.schedule_days)].sort()
   return {
     name: v.name,
     icon: v.icon,
     color: v.color,
+    type: 'build',
+    quit_started_at: null,
     start_date: v.start_date,
     goal_kind: v.goal_kind,
     goal_period: v.goal_period,
@@ -94,11 +117,15 @@ export function toHabitFields(v: HabitFormValues) {
   } satisfies HabitUpdate
 }
 
-export function fromHabit(habit: Habit): HabitFormValues {
+export function fromHabit(habit: Habit, timezone: string): HabitFormValues {
   return {
     name: habit.name,
     icon: habit.icon,
     color: habit.color,
+    type: habit.type,
+    quit_started_at: habit.quit_started_at
+      ? toDateTimeInput(habit.quit_started_at, timezone)
+      : `${habit.start_date}T12:00`,
     start_date: habit.start_date,
     goal_kind: habit.goal_kind,
     goal_period: habit.goal_period,
@@ -113,12 +140,18 @@ function pick<T extends string>(value: string | null, options: readonly T[], fal
 }
 
 /** Valores iniciais de um hábito novo; as sugestões da Hoje preenchem pela URL. */
-export function newHabitDefaults(params: URLSearchParams, today: string): HabitFormValues {
+export function newHabitDefaults(
+  params: URLSearchParams,
+  today: string,
+  nowInput: string,
+): HabitFormValues {
   const target = Number(params.get('target'))
   return {
     name: params.get('name') ?? '',
     icon: params.get('icon') ?? '✅',
     color: HABIT_COLORS[0],
+    type: params.get('type') === 'quit' ? 'quit' : 'build',
+    quit_started_at: nowInput,
     start_date: today,
     goal_kind: pick(params.get('kind'), GOAL_KINDS, 'check'),
     goal_period: pick(params.get('period'), GOAL_PERIODS, 'day'),

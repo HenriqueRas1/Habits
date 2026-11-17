@@ -47,3 +47,22 @@ export function formatMonthLabel(month: string): string {
   const [y, m] = month.split('-').map(Number)
   return format(new Date(y, m - 1, 1), "MMMM 'de' yyyy", { locale: ptBR })
 }
+
+/** Meio-dia de uma data no fuso, como ISO (horário padrão de recaídas registradas sem hora). */
+export function noonIn(date: string, timezone: string): string {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(new TZDate(y, m - 1, d, 12, 0, 0, timezone).getTime()).toISOString()
+}
+
+/** ISO → valor de <input type="datetime-local"> no fuso ("2026-03-10T08:30"). */
+export function toDateTimeInput(iso: string, timezone: string): string {
+  return format(new TZDate(new Date(iso), timezone), "yyyy-MM-dd'T'HH:mm")
+}
+
+/** Valor de <input type="datetime-local"> interpretado no fuso → ISO. */
+export function fromDateTimeInput(value: string, timezone: string): string {
+  const [date, time] = value.split('T')
+  const [y, m, d] = date.split('-').map(Number)
+  const [hh, mm] = time.split(':').map(Number)
+  return new Date(new TZDate(y, m - 1, d, hh, mm, 0, timezone).getTime()).toISOString()
+}

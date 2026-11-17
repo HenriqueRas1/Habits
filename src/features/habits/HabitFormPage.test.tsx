@@ -50,6 +50,8 @@ describe('HabitFormPage', () => {
       name: 'Beber água',
       icon: '💧',
       color: '#10b981',
+      type: 'build',
+      quit_started_at: null,
       start_date: '2026-03-10',
       goal_kind: 'check',
       goal_period: 'day',
@@ -158,5 +160,29 @@ describe('HabitFormPage', () => {
 
     await user.click(button)
     await vi.waitFor(() => expect(habitsApi.deleteHabit).toHaveBeenCalledWith(habit.id))
+  })
+
+  it('cria hábito de parar com "sem desde" no fuso de São Paulo', async () => {
+    renderApp('/habits/new?name=Fumar')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: 'Parar' }))
+    expect(screen.queryByRole('button', { name: 'Quantidade' })).not.toBeInTheDocument()
+    const since = screen.getByLabelText('Sem desde')
+    expect(since).toHaveValue('2026-03-10T15:00') // agora, 18h UTC = 15h em São Paulo
+    await user.clear(since)
+    await user.type(since, '2026-03-01T23:30')
+    await user.click(screen.getByRole('button', { name: 'Criar hábito' }))
+
+    await vi.waitFor(() =>
+      expect(habitsApi.createHabit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'quit',
+          quit_started_at: '2026-03-02T02:30:00.000Z',
+          start_date: '2026-03-01',
+          goal_kind: 'check',
+          goal_period: 'day',
+        }),
+      ),
+    )
   })
 })

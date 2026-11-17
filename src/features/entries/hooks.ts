@@ -34,6 +34,9 @@ export type NewEntryFields = {
   kind: EntryKind
   value: number
   note?: string | null
+  source?: 'manual' | 'timer'
+  started_at?: string | null
+  ended_at?: string | null
 }
 
 export type EntryAction =

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { applyOptimistic, rollback } from '../../lib/optimistic.ts'
+import { WRITE_QUEUE } from '../../lib/writeQueue.ts'
 import type { Habit, HabitUpdate } from '../../types/domain.ts'
 import {
   archiveHabit,
@@ -49,6 +50,7 @@ function toOptimisticHabit(habit: NewHabit, userId: string): Habit {
 export function useCreateHabit(userId: string) {
   const client = useQueryClient()
   return useMutation({
+    scope: WRITE_QUEUE,
     mutationFn: (habit: NewHabit) => createHabit(habit),
     onMutate: (habit) =>
       applyOptimistic<Habit[]>(client, habitsKey, (old) => [

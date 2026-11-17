@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { applyOptimistic, rollback } from '../../lib/optimistic.ts'
+import { WRITE_QUEUE } from '../../lib/writeQueue.ts'
 import type { Entry, EntryKind } from '../../types/domain.ts'
 import { createEntry, deleteEntries, fetchEntries, updateEntry } from './api.ts'
 
@@ -84,7 +85,7 @@ export function useEntryAction(userId: string) {
   const client = useQueryClient()
   return useMutation({
     // Em fila: toques rápidos (+ + −) chegam ao banco na ordem em que foram feitos.
-    scope: { id: 'entries' },
+    scope: WRITE_QUEUE,
     mutationFn: (action: EntryAction) => run(action),
     onMutate: (action) =>
       applyOptimistic<Entry[]>(client, entriesKey, (old, key) => {

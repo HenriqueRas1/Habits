@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { applyOptimistic, rollback } from '../../lib/optimistic.ts'
+import { WRITE_QUEUE } from '../../lib/writeQueue.ts'
 import { elapsedSeconds, pauseTimer, resumeTimer, timerMinutes } from '../../domain/timer.ts'
 import type { ActiveTimer } from '../../types/domain.ts'
 import { useEntryAction } from '../entries/hooks.ts'
@@ -30,7 +31,7 @@ async function run(action: TimerAction) {
 function useTimerMutation() {
   const client = useQueryClient()
   return useMutation({
-    scope: { id: 'timers' },
+    scope: WRITE_QUEUE,
     mutationFn: (action: TimerAction) => run(action),
     onMutate: (action) =>
       applyOptimistic<ActiveTimer[]>(client, timersKey, (old) => {

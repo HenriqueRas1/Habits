@@ -41,3 +41,9 @@ export function formatDayLabel(date: string): string {
   const [y, m, d] = date.split('-').map(Number)
   return format(new Date(y, m - 1, d), "EEEE, d 'de' MMMM", { locale: ptBR })
 }
+
+/** "março de 2026" a partir de YYYY-MM */
+export function formatMonthLabel(month: string): string {
+  const [y, m] = month.split('-').map(Number)
+  return format(new Date(y, m - 1, 1), "MMMM 'de' yyyy", { locale: ptBR })
+}

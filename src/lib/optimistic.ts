@@ -10,11 +10,13 @@ type Snapshot = [QueryKey, unknown][]
 export async function applyOptimistic<T>(
   client: QueryClient,
   key: QueryKey,
-  update: (old: T) => T,
+  update: (old: T, key: QueryKey) => T,
 ): Promise<{ snapshot: Snapshot }> {
   await client.cancelQueries({ queryKey: key })
   const snapshot = client.getQueriesData({ queryKey: key })
-  client.setQueriesData<T>({ queryKey: key }, (old) => (old === undefined ? old : update(old)))
+  for (const [queryKey, old] of snapshot) {
+    if (old !== undefined) client.setQueryData<T>(queryKey, update(old as T, queryKey))
+  }
   return { snapshot }
 }
 

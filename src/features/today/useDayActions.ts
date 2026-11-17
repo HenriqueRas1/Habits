@@ -34,7 +34,8 @@ export function useDayActions(userId: string) {
         }),
       unskip: () => day.skipEntry && mutate({ type: 'delete', ids: [day.skipEntry.id] }),
       setNote: (note) =>
-        day.noteEntry && mutate({ type: 'note', id: day.noteEntry.id, note: note || null }),
+        day.noteEntry &&
+        mutate({ type: 'update', id: day.noteEntry.id, patch: { note: note || null } }),
     }
   }
 }

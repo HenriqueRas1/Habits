@@ -31,7 +31,7 @@ export function HabitCard({ day, actions, isToday, reorder }: Props) {
           {habit.icon}
         </span>
 
-        <Link to={`/habits/${habit.id}/edit`} className="min-w-0 flex-1 py-1">
+        <Link to={`/habits/${habit.id}`} className="min-w-0 flex-1 py-1">
           <span className="block truncate font-semibold">{habit.name}</span>
           <span className="block text-sm text-slate-500">
             {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]

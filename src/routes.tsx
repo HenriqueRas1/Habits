@@ -4,6 +4,7 @@ import { LoginPage } from './features/auth/LoginPage.tsx'
 import { ProtectedRoute } from './features/auth/ProtectedRoute.tsx'
 import { ResetPasswordPage } from './features/auth/ResetPasswordPage.tsx'
 import { CalendarPage } from './features/calendar/CalendarPage.tsx'
+import { HabitDetailPage } from './features/habits/detail/HabitDetailPage.tsx'
 import { HabitFormPage } from './features/habits/HabitFormPage.tsx'
 import { SettingsPage } from './features/settings/SettingsPage.tsx'
 import { StatsPage } from './features/stats/StatsPage.tsx'
@@ -20,6 +21,7 @@ export const routes: RouteObject[] = [
         children: [
           { index: true, element: <TodayPage /> },
           { path: 'habits/new', element: <HabitFormPage /> },
+          { path: 'habits/:id', element: <HabitDetailPage /> },
           { path: 'habits/:id/edit', element: <HabitFormPage /> },
           { path: 'calendar', element: <CalendarPage /> },
           { path: 'stats', element: <StatsPage /> },

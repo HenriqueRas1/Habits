@@ -3,6 +3,13 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 import { hideToast } from '../components/ui/toastStore.ts'
 
+// O jsdom não tem ResizeObserver; os gráficos (Recharts) precisam dele para existir.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 // Testes de unidade nunca abrem conexão Realtime.
 vi.mock('../lib/realtime.ts', () => ({
   useRealtimeSync: () => undefined,

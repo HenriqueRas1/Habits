@@ -1,12 +1,7 @@
 import { addDays } from '../lib/dates.ts'
 import type { Entry, Habit } from '../types/domain.ts'
 import { daysIn, periodOf, previousPeriod, type WeekStart } from './periods.ts'
-import {
-  indexEntries,
-  isScheduled,
-  progressFromIndex,
-  stateFromIndex,
-} from './progress.ts'
+import { indexEntries, isScheduled, progressFromIndex, stateFromIndex } from './progress.ts'
 import { bestStreak, currentStreak } from './streaks.ts'
 
 /** Estatísticas só olham hábitos de construir (os de parar não têm meta de "fazer"). */

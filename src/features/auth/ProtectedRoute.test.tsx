@@ -4,7 +4,7 @@ import { renderApp } from '../../test/renderApp.tsx'
 
 describe('ProtectedRoute', () => {
   it('manda para /login quem não está logado', () => {
-    const { router } = renderApp('/stats', { session: null })
+    const { router } = renderApp('/calendar', { session: null })
     expect(router.state.location.pathname).toBe('/login')
     expect(screen.getByRole('heading', { name: 'Entrar' })).toBeInTheDocument()
   })

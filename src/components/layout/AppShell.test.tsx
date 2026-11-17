@@ -20,8 +20,11 @@ describe('AppShell', () => {
 
     await user.click(statsLink)
 
+    expect(
+      // A tela de estatísticas carrega sob demanda (com o Recharts): pode demorar um pouco.
+      await screen.findByRole('heading', { level: 1, name: 'Estatísticas' }, { timeout: 5000 }),
+    ).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/stats')
-    expect(screen.getByRole('heading', { level: 1, name: 'Estatísticas' })).toBeInTheDocument()
   })
 
   it('marca a aba ativa', () => {

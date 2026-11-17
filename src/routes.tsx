@@ -7,7 +7,6 @@ import { CalendarPage } from './features/calendar/CalendarPage.tsx'
 import { HabitDetailPage } from './features/habits/detail/HabitDetailPage.tsx'
 import { HabitFormPage } from './features/habits/HabitFormPage.tsx'
 import { SettingsPage } from './features/settings/SettingsPage.tsx'
-import { StatsPage } from './features/stats/StatsPage.tsx'
 import { TodayPage } from './features/today/TodayPage.tsx'
 
 export const routes: RouteObject[] = [
@@ -24,7 +23,13 @@ export const routes: RouteObject[] = [
           { path: 'habits/:id', element: <HabitDetailPage /> },
           { path: 'habits/:id/edit', element: <HabitFormPage /> },
           { path: 'calendar', element: <CalendarPage /> },
-          { path: 'stats', element: <StatsPage /> },
+          {
+            path: 'stats',
+            // Carrega só ao abrir: o Recharts é grande e não precisa pesar na abertura do app.
+            lazy: async () => ({
+              Component: (await import('./features/stats/StatsPage.tsx')).StatsPage,
+            }),
+          },
           { path: 'settings', element: <SettingsPage /> },
         ],
       },

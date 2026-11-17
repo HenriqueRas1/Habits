@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button.tsx'
 import { signOut } from '../auth/api.ts'
 import { useSession } from '../auth/sessionContext.ts'
 import { ArchivedCard } from './ArchivedCard.tsx'
+import { BackupCard } from './BackupCard.tsx'
 import { PreferencesCard } from './PreferencesCard.tsx'
 
 export function SettingsPage() {
@@ -28,6 +29,7 @@ export function SettingsPage() {
       <PageHeader title="Ajustes" />
       <PreferencesCard userId={session?.user.id ?? ''} />
       <ArchivedCard />
+      <BackupCard userId={session?.user.id ?? ''} />
       <section aria-label="Conta" className="bg-surface rounded-2xl border border-slate-200 p-5">
         <h2 className="text-sm font-semibold text-slate-500">Conta</h2>
         <p className="mt-1 mb-4 break-all">{session?.user.email}</p>

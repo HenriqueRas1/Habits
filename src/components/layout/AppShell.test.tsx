@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react'
+import { act, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderApp } from '../../test/renderApp.tsx'
 
 describe('AppShell', () => {
@@ -36,5 +36,31 @@ describe('AppShell', () => {
   it('redireciona rotas desconhecidas para Hoje', () => {
     const { router } = renderApp('/nao-existe')
     expect(router.state.location.pathname).toBe('/')
+  })
+})
+
+describe('Sem conexão', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('avisa e desativa os botões de gravar; volta ao normal quando a internet volta', async () => {
+    const online = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+    renderApp('/')
+    const add = await screen.findByRole('button', { name: 'Novo hábito ou tarefa' })
+
+    online.mockReturnValue(false)
+    act(() => {
+      window.dispatchEvent(new Event('offline'))
+    })
+    expect(screen.getByText(/Sem conexão/)).toBeInTheDocument()
+    expect(add).toBeDisabled()
+
+    online.mockReturnValue(true)
+    act(() => {
+      window.dispatchEvent(new Event('online'))
+    })
+    expect(screen.queryByText(/Sem conexão/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Novo hábito ou tarefa' })).toBeEnabled()
   })
 })

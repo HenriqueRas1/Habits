@@ -13,6 +13,7 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "test:rls": "vitest run --mode rls",
+    "test:e2e": "playwright test",
     "db:link": "supabase link --project-ref pnyukpxhovxxcfqcqgrb",
     "db:push": "supabase db push --remote",
     "db:types": "supabase gen types typescript --remote --schema public > src/types/database.ts && prettier --write src/types/database.ts"
@@ -32,6 +33,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/vite": "^4.3.5",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

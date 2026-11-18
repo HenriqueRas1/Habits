@@ -43,7 +43,7 @@ export function TimerScreen({ habit, timer, doneToday, date, actions, onClose }:
       role="dialog"
       aria-modal="true"
       aria-label={`Timer de ${habit.name}`}
-      className="bg-surface fixed inset-0 z-50 flex flex-col px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+      className="bg-surface fixed inset-0 z-50 flex flex-col px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] text-slate-900"
     >
       <div className="flex items-center justify-between">
         <p className="flex items-center gap-2 text-lg font-semibold">

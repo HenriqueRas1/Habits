@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { useHabitLink } from '../today/useHabitLink.ts'
 import { CardFill } from '../../components/ui/CardFill.tsx'
+import { withAlpha } from '../../lib/color.ts'
 import { PromptDialog } from '../../components/ui/PromptDialog.tsx'
 import { formatQuitDuration, milestones } from '../../domain/quit.ts'
 import { useNow } from '../../lib/useNow.ts'
@@ -34,8 +35,12 @@ export function QuitCard({ habit, entries, today }: Props) {
       : `faltam ${daysToNext} ${daysToNext === 1 ? 'dia' : 'dias'} para ${next}`
 
   return (
-    <li className="bg-surface relative flex min-h-16 items-center gap-3 rounded-full border border-transparent py-2 pr-2 pl-2">
-      <CardFill ratio={ratio} color={`${habit.color}55`} />
+    <li className="bg-surface relative flex min-h-16 items-center gap-3 rounded-full py-2 pr-2 pl-2">
+      <CardFill
+        base={withAlpha(habit.color, 0.18)}
+        fill={withAlpha(habit.color, 0.45)}
+        ratio={ratio}
+      />
       <span
         aria-hidden
         className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"

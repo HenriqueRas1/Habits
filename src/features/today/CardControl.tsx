@@ -31,7 +31,7 @@ export function CardControl({ day, actions, isToday, timer }: Props) {
         }`}
         onClick={actions.toggleCheck}
         className={`flex size-10 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90 ${
-          done ? 'border-slate-800 text-slate-800' : 'bg-surface/70'
+          done ? 'border-current' : 'bg-surface/70'
         }`}
         style={done ? undefined : { borderColor: `${habit.color}99` }}
       >

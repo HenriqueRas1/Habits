@@ -45,7 +45,7 @@ export function PromptDialog({
         aria-labelledby={`${id}-title`}
         onSubmit={submit}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
-        className="bg-surface w-full max-w-sm rounded-2xl p-5 shadow-xl"
+        className="bg-surface w-full max-w-sm rounded-2xl p-5 text-slate-900 shadow-xl"
       >
         <h2 id={`${id}-title`} className="text-lg font-semibold">
           {title}

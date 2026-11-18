@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import type { Task } from '../../types/domain.ts'
 import { CardFill } from '../../components/ui/CardFill.tsx'
+import { readableTextOn, withAlpha } from '../../lib/color.ts'
+
+/** Tarefas usam a cor do app (índigo): fraca enquanto pendente, cheia quando feita. */
+const TASK_COLOR = '#6366f1'
 
 type Props = {
   task: Task
@@ -20,11 +24,10 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
 
   return (
     <li
-      className={`bg-surface relative flex min-h-16 items-center gap-3 rounded-full border py-2 pr-2 pl-2 transition-colors ${
-        done ? 'border-transparent' : 'border-slate-200'
-      }`}
+      className="bg-surface relative flex min-h-16 items-center gap-3 rounded-full py-2 pr-2 pl-2 transition-colors"
+      style={done ? { color: readableTextOn(TASK_COLOR) } : undefined}
     >
-      <CardFill ratio={done ? 1 : 0} color="#6366f155" />
+      <CardFill base={withAlpha(TASK_COLOR, 0.18)} fill={TASK_COLOR} ratio={done ? 1 : 0} />
       <span
         aria-hidden
         className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"
@@ -32,7 +35,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
         📝
       </span>
       <span
-        className={`relative min-w-0 flex-1 truncate font-semibold ${done ? 'text-slate-500 line-through' : ''}`}
+        className={`relative min-w-0 flex-1 truncate font-semibold ${done ? 'line-through opacity-80' : ''}`}
       >
         {task.title}
       </span>
@@ -43,7 +46,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
           aria-label={`Mais opções da tarefa ${task.title}`}
           aria-expanded={menu}
           onClick={() => setMenu((m) => !m)}
-          className="flex size-11 items-center justify-center rounded-full text-xl text-slate-500 hover:bg-slate-100"
+          className="flex size-11 items-center justify-center rounded-full text-xl opacity-60 hover:bg-black/10"
         >
           ⋯
         </button>
@@ -57,7 +60,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
             />
             <ul
               role="menu"
-              className="bg-surface absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-slate-200 py-1 shadow-lg"
+              className="bg-surface absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-slate-200 py-1 text-slate-900 shadow-lg"
             >
               <MenuItem onClick={choose(onEdit)}>Editar tarefa</MenuItem>
               <MenuItem onClick={choose(onDelete)} danger>
@@ -74,7 +77,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
         aria-label={`${task.title}: ${done ? 'feita, toque para desmarcar' : 'marcar como feita'}`}
         onClick={onToggle}
         className={`relative flex size-10 shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-90 ${
-          done ? 'border-slate-800 text-slate-800' : 'border-brand-500/60 bg-surface/70'
+          done ? 'border-current' : 'border-brand-500/60 bg-surface/70'
         }`}
       >
         {done && (

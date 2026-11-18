@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { useHabitLink } from './useHabitLink.ts'
 import { CardFill } from '../../components/ui/CardFill.tsx'
+import { readableTextOn, withAlpha } from '../../lib/color.ts'
 import type { ActiveTimer } from '../../types/domain.ts'
 import { CardControl } from './CardControl.tsx'
 import { HabitMenu } from './HabitMenu.tsx'
@@ -24,13 +25,17 @@ export function HabitCard({ day, actions, isToday, reorder, timer }: Props) {
   const progress = progressLabel(day)
   const ratio = completed || skipped ? 1 : Math.min(1, day.progress / habit.goal_target)
 
+  // Cor do hábito fraca sempre; cheia quando a meta do período foi batida.
+  const fill = skipped ? '#e2e8f0' : completed ? habit.color : withAlpha(habit.color, 0.45)
+
   return (
     <li
-      className={`bg-surface relative flex min-h-16 items-center gap-3 rounded-full border py-2 pr-2 pl-2 transition-colors ${
-        ratio > 0 ? 'border-transparent' : 'border-slate-200'
-      } ${skipped || !day.scheduled ? 'opacity-60' : ''}`}
+      className={`bg-surface relative flex min-h-16 items-center gap-3 rounded-full py-2 pr-2 pl-2 transition-colors ${
+        skipped || !day.scheduled ? 'opacity-60' : ''
+      }`}
+      style={completed ? { color: readableTextOn(habit.color) } : undefined}
     >
-      <CardFill ratio={ratio} color={skipped ? '#e2e8f0' : `${habit.color}55`} />
+      <CardFill base={withAlpha(habit.color, 0.18)} fill={fill} ratio={ratio} />
 
       <span
         className="bg-surface/70 relative flex size-11 shrink-0 items-center justify-center rounded-full text-xl"
@@ -41,13 +46,13 @@ export function HabitCard({ day, actions, isToday, reorder, timer }: Props) {
 
       <Link to={habitLink(habit.id)} className="relative min-w-0 flex-1 py-1">
         <span className="block truncate font-semibold">{habit.name}</span>
-        <span className="block truncate text-sm text-slate-600">
+        <span className={`block truncate text-sm ${completed ? 'opacity-80' : 'text-slate-600'}`}>
           {[progress, skipped ? '⏭ Pulado' : streakLabel(habit.goal_period, day.streak)]
             .filter(Boolean)
             .join(' · ')}
         </span>
         {day.noteEntry?.note && (
-          <span className="block truncate text-sm text-slate-500 italic">{day.noteEntry.note}</span>
+          <span className="block truncate text-sm italic opacity-70">{day.noteEntry.note}</span>
         )}
       </Link>
 

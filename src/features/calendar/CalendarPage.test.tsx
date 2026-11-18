@@ -26,10 +26,17 @@ describe('Calendário geral', () => {
 
     const { router } = renderApp('/calendar')
     const monday = await screen.findByRole('button', {
-      name: 'segunda-feira, 9 de março: 1 de 2 hábitos',
+      name: 'segunda-feira, 9 de março: 1 de 2 hábitos feitos',
     })
     expect(entriesApi.fetchEntries).toHaveBeenCalledWith('2026-03-01', '2026-03-31')
-    expect(screen.getByRole('button', { name: /^quarta-feira, 11 de março/ })).toBeDisabled()
+    // ✕ quantos ficaram sem fazer, ✓ quantos foram feitos
+    expect(monday).toHaveTextContent('9✕ 1✓ 1')
+    // Futuro: só quantos hábitos estão previstos, sem poder tocar.
+    const wednesday = screen.getByRole('button', {
+      name: 'quarta-feira, 11 de março: 2 hábitos previstos',
+    })
+    expect(wednesday).toBeDisabled()
+    expect(wednesday).toHaveTextContent('– 2')
     expect(screen.getByRole('button', { name: 'Mês anterior' })).toBeDisabled()
 
     await userEvent.setup().click(monday)

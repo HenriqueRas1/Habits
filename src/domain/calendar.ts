@@ -83,3 +83,17 @@ export function dayCompletion(
   }
   return result
 }
+
+/**
+ * Cor do dia no calendário geral:
+ * all = todos feitos (verde), most = 50% ou mais (verde claro),
+ * few = abaixo de 50% (vermelho claro), none = nenhum (vermelho), empty = sem hábitos no dia.
+ */
+export type DayTone = 'all' | 'most' | 'few' | 'none' | 'empty'
+
+export function dayTone({ done, total }: Pick<Completion, 'done' | 'total'>): DayTone {
+  if (total === 0) return 'empty'
+  if (done >= total) return 'all'
+  if (done === 0) return 'none'
+  return done / total >= 0.5 ? 'most' : 'few'
+}

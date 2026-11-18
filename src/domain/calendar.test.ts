@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { makeEntry, makeHabit } from '../test/factories.ts'
 import type { Entry, Habit } from '../types/domain.ts'
-import { addMonths, dayCell, dayCompletion, monthGrid } from './calendar.ts'
+import { addMonths, dayCell, dayCompletion, dayTone, monthGrid } from './calendar.ts'
 
 const TODAY = '2026-03-10' // terça
 
@@ -122,5 +122,22 @@ describe('dayCompletion', () => {
   it('ignora hábitos que ainda não tinham começado', () => {
     const later = makeHabit({ start_date: '2026-03-11' })
     expect(dayCompletion([later], [], TODAY)).toEqual({ done: 0, total: 0, others: 0 })
+  })
+})
+
+describe('dayTone', () => {
+  it('verde: todos feitos; vermelho: nenhum', () => {
+    expect(dayTone({ done: 5, total: 5 })).toBe('all')
+    expect(dayTone({ done: 0, total: 3 })).toBe('none')
+  })
+
+  it('verde claro a partir de 50%; vermelho claro abaixo', () => {
+    expect(dayTone({ done: 2, total: 4 })).toBe('most')
+    expect(dayTone({ done: 4, total: 5 })).toBe('most')
+    expect(dayTone({ done: 1, total: 3 })).toBe('few')
+  })
+
+  it('sem hábitos no dia: neutro', () => {
+    expect(dayTone({ done: 0, total: 0 })).toBe('empty')
   })
 })

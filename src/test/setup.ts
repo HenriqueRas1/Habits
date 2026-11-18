@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 import { hideToast } from '../components/ui/toastStore.ts'
+
+// Telas carregam sob demanda (import dinâmico): com a máquina ocupada, 1 s de espera é pouco.
+configure({ asyncUtilTimeout: 4000 })
 
 // O jsdom não tem ResizeObserver; os gráficos (Recharts) precisam dele para existir.
 globalThis.ResizeObserver ??= class {
